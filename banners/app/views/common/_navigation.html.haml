@@ -1,0 +1,8 @@
+.widget-title
+  %ul.nav.nav-tabs
+    %li{class: "#{'active' if params[:controller] == 'platforms' }"}
+      = link_to "Platforms", platforms_path
+    %li{class: "#{'active' if params[:controller] == 'banner_for_platforms'}" }
+      = link_to "Banner for platforms", banner_for_platforms_path
+    %li{class: "#{'active' if params[:controller] == 'banners'}" }
+      = link_to "Banners", banners_path

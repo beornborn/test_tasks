@@ -1,0 +1,116 @@
+// Place all the styles related to the Help controller here.
+// They will automatically be included in application.css.
+// You can use Sass (SCSS) here: http://sass-lang.com/
+
+/*common*/
+html, body {
+  height: 100%;
+}
+
+body {
+  position:relative; /* needed for footer positioning*/
+  min-height:100%; /* real browsers */
+}
+
+#notification_container{
+  margin-left: 15px;
+  margin-right: 15px;
+  width: 98%;
+  .alert {
+    margin-bottom: 7px;
+  }
+}
+
+
+
+#main-content {
+  height: 88%;
+  position:relative; /* needed for footer positioning*/
+  height:auto !important; /* real browsers */
+  min-height:90%; /* real browsers */
+  margin-left: 15px;
+  margin-right: 15px;
+    border-left: 1px solid #CDCDCD;
+    border-right: 1px solid #CDCDCD;
+  background: none repeat scroll 0 0 #F9F9F9;
+  > .widget-box{
+    border-left: 0px solid #CDCDCD;
+    border-right: 0px solid #CDCDCD;
+    margin: 0;
+  }
+}
+
+#content > .container-fluid > .no-margin-top, .row-fluid > .span12 > .no-margin-top:first-child  {
+  margin-top: 0px;
+}
+
+.form-horizontal input[type=text].small_text_field{
+  width:200px;
+}
+
+.center {
+  text-align: center;
+}
+
+.form-horizontal .controls.right-labels {
+  margin-left:40px;
+}
+
+/*header*/
+header#topnav{
+  h1{ 
+    margin-top: 28px;
+    font-weight: 100;
+    font-size: 32px;
+    margin-left: 20px;
+  } 
+  min-height: 10%;
+  #right-nav {
+    margin-top: 10px;
+  }
+}
+
+/*footer*/
+#footer {
+  position: absolute;
+  bottom: 0;
+  height: 40px;
+  width: 100%;
+  background: #ddd;
+  border-top: 2px solid gray;
+  > div {
+    margin-top: 9px;
+  }
+}
+
+/*sidebar*/
+.account_balance {
+  margin-left: 30px;
+}
+
+#bills_content {
+  border-bottom: none;
+}
+
+#create_account_button{
+  margin-left:30px;
+}
+
+
+/* comment */
+.comment_text_area {
+  height: 100px;
+}
+
+/*payment methods*/
+.stripe-card-create {
+  margin-right: 10px;
+  float: left;
+}
+
+.padding-bottom-30 {
+  padding-bottom: 30px;
+}
+/*form .clearfix:before, form .clearfix:after {
+  display: inline;
+}*/

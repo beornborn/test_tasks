@@ -1,0 +1,18 @@
+/*tech-skills*/
+
+.tech-skills {
+}
+.tech-skills__title {
+	font-size: 25px;
+	margin-bottom:43px;
+	font-weight: bold;
+	text-align: center;
+}
+.tech-skills__list {
+	list-style-image: url(../../images/check.png);
+}
+.tech-skills__list li {
+	margin: 26px 0px 0px 0px;
+}
+
+/*end tech-skills*/

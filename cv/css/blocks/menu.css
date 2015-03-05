@@ -1,0 +1,50 @@
+/*
+*  menu
+*/
+
+.menu {
+	padding-top: 50px;
+	height: 20px;
+}
+.menu__button-container {
+	font-family: Trebuchet MS, Liberation Sans, DejaVu Sans, sans-serif;
+	width: 76px;
+	float: left;
+	height: 20px;
+	margin-left: 125px;
+}
+.menu__button-container-button {
+	color: #009AFF;
+	text-decoration: none;
+}
+
+.menu__button-container-button:visited {
+	color: #009AFF;
+}
+.menu__button-container-button:active {
+	color: #009AFF;
+}
+.menu__button-container-button:hover {
+	color: #1111e1;
+}
+
+.menu__button-container-button-state-active {
+	color: #1111e1 ;
+	text-decoration: none;
+	font-size:17px;
+	font-weight:bold;
+}
+.menu__button-container-button-state-active:visited {
+	color: #1111e1;
+	text-decoration: none;
+}
+.menu__button-container-button-state-active:active {
+	color: #1111e1;
+	text-decoration: none;
+}
+.menu__button-container-button-state-active:hover {
+	color: #1111e1;
+	text-decoration: none;
+}
+
+/* end menu */

@@ -1,0 +1,28 @@
+= form_for @banner_for_platform, :html => { :class => 'form-horizontal' } do |f|
+  .control-group
+    = f.label :banner_id, :class => 'control-label'
+    .controls
+      = f.collection_select(:banner_id, Banner.all, :id, :name)
+  .control-group
+    = f.label :platform_id, :class => 'control-label'
+    .controls
+      = f.collection_select(:platform_id, Platform.all, :id, :name)
+  .control-group
+    = f.label :max_views, :class => 'control-label'
+    .controls
+      = f.number_field :max_views, :class => 'number_field'
+  .control-group
+    = f.label :amount_views, :class => 'control-label'
+    .controls
+      = f.number_field :amount_views, :class => 'number_field'
+  .control-group
+    = f.label :amount_clicks, :class => 'control-label'
+    .controls
+      = f.number_field :amount_clicks, :class => 'number_field'
+  .control-group
+    = f.label :default, :class => 'control-label'
+    .controls
+      = f.check_box :default, :class => 'check_box'
+  .form-actions
+    = f.submit nil, :class => 'btn btn-primary'
+    = link_to t('.cancel', :default => t("helpers.links.cancel")), banner_for_platforms_path, :class => 'btn'                   

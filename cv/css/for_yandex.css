@@ -1,0 +1,12 @@
+@import url(blocks/background.css);
+@import url(blocks/q-ya.css);
+@import url(common.css);
+
+.back{
+	position:absolute;
+	z-index:2;
+	top:5px;
+	left:5px;	
+}
+
+

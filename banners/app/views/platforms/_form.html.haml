@@ -1,0 +1,13 @@
+= form_for @platform, :html => { :class => 'form-horizontal' } do |f|
+  .control-group
+    = f.label :name, :class => 'control-label'
+    .controls
+      = f.text_field :name, :class => 'text_field'
+  .control-group
+    = f.label :banners, :class => 'control-label'
+    .controls
+      = f.collection_select(:banners, Banner.all, :id, :name, {:selected => @platform.banner_ids},{:multiple => true})
+
+  .form-actions
+    = f.submit nil, :class => 'btn btn-primary'
+    = link_to t('.cancel', :default => t("helpers.links.cancel")), platforms_path, :class => 'btn'

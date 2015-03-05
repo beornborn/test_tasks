@@ -1,0 +1,65 @@
+/*prof-exp*/
+
+.prof-exp {
+}
+.prof-exp__title {
+	font-size: 25px;
+	font-weight: bold;
+	text-align: center;
+	margin-bottom:43px;
+}
+.prof-exp__firm-table {
+	width: 600px;
+	margin-top: 20px;
+	margin-left: 50px;
+}
+.prof-exp__firm-table-name {
+	font-weight: bold;
+}
+.prof-exp__firm-table-position {
+	text-align: center;
+}
+.prof-exp__firm-table-term {
+	text-align: right;
+	font-style: italic;
+}
+.prof-exp__project-table {
+	width: 600px;
+	margin-top: 20px;
+	margin-left: 50px;
+}
+.prof-exp__project-table-name {
+	font-weight: bold;
+}
+.prof-exp__project-table-term {
+	text-align: right;
+	font-style: italic;
+}
+.prof-exp__project-description {
+	font-size: 13px;
+	margin: 15px 0px 0px 30px;
+	width: 625px;
+}
+.prof-exp__project-act {
+	font-weight: bold;
+	margin: 15px 0px 0px 30px;
+	width: 625px;
+	margin-left: 35px;
+	color: #009AFF;
+	text-decoration: none;
+	cursor: pointer;
+}
+.prof-exp__project-act-content {
+	margin: 0px 0px 0px 30px;
+	width: 625px;
+}
+.prof-exp__project-act-content-list {
+	list-style-image: url(../../images/check.png);
+}
+.prof-exp__project-act-content-list li {
+	margin: 5px 0px 0px 0px;
+}
+
+
+
+/*end prof-exp*/

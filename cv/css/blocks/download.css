@@ -1,0 +1,34 @@
+/*download*/
+
+.download{
+	position:absolute;
+	top: 7px;
+	left: 346px;
+	z-index:1;	
+}
+
+.download__image{
+	width:32px;
+	height: 32px;
+	margin-bottom: 15px;
+}
+
+.download__link {
+	margin-left: 15px;
+	color: #009AFF;
+	text-decoration: none;
+}
+.download__link:visited {
+	color: #009AFF;
+	text-decoration: none;
+}
+.download__link:active {
+	color: #009AFF;
+	text-decoration: none;
+}
+.download__link:hover {
+	color: #1111e1;
+	text-decoration: none;
+}
+
+/*end download*/

@@ -1,0 +1,23 @@
+/*education*/
+
+.education {
+}
+.education__title {
+	font-size: 25px;
+	margin-bottom:43px;
+	font-weight: bold;
+	text-align: center;
+}
+.education__list {
+	list-style-image: url(../../images/check.png);
+}
+.education__list {
+	margin: 5px 0px 0px 0px;
+}
+
+.education__inner-list{
+	list-style-image:none;
+	list-style-type:disc; 
+}
+
+/*end education*/

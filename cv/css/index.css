@@ -1,0 +1,24 @@
+@import url(blocks/education.css);
+@import url(blocks/prof-exp.css);
+@import url(blocks/tech-skills.css);
+@import url(blocks/background.css);
+@import url(blocks/main.css);
+@import url(blocks/menu.css);
+@import url(blocks/for-yandex.css);
+@import url(blocks/download.css);
+@import url(common.css);
+
+#page-wrap {
+	background-color: #FFF;
+	position: relative;
+	width: 920px;
+	margin: 0px auto;
+	min-height: 100%;
+	height: 100%;
+}
+#content {
+	width: 700px;
+	height: 500px;
+	margin: 70px 110px 0px 110px;
+}
+

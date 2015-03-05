@@ -1,0 +1,25 @@
+development:
+  adapter: postgresql
+  host: localhost
+  encoding: utf8
+  database: test_adv_development
+  username: pguser
+  password: pguser
+
+test:
+  adapter: postgresql
+  host: localhost
+  encoding: utf8
+  database: test_adv_test
+  username: pguser
+  password: pguser
+
+production:
+  adapter: postgresql
+  host: localhost
+  encoding: utf8
+  reconnect: false
+  database: test_adv_production
+  pool: 5
+  username: pguser
+  password: pguser

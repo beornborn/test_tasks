@@ -1,0 +1,36 @@
+body, html {
+	height: 100%;
+	font-size: 14px;
+	font-family: Arial, Liberation Sans, DejaVu Sans, sans-serif;
+}
+.no-disp {
+	display: none;
+}
+.bold {
+	font-weight: bold;
+}
+.link {
+	margin-left: 15px;
+	color: #009AFF;
+	text-decoration: none;
+	cursor: pointer;
+	margin: 0;
+}
+.link:visited {
+	color: #009AFF;
+	text-decoration: none;
+	cursor: pointer;
+}
+.link:active {
+	color: #009AFF;
+	text-decoration: none;
+	cursor: pointer;
+}
+.link:hover {
+	color: #1111e1;
+	text-decoration: none;
+	cursor: pointer;
+}
+.opacity0 {
+	opacity: 0;
+}

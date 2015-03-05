@@ -1,0 +1,85 @@
+<!doctype html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title>Calendar</title>
+    <style type="text/css">
+	    body { margin:0; padding:10% 0 0 40%; border:0; }
+    	div { position:relative; float:left; margin:0; padding:15px; }
+
+      .cal_holder > div {   border-right:1px solid #bbb;    border-bottom:1px solid #bbb;}
+      .cal_holder > div:nth-child(8n+7) {border-right:0px solid #ccc;}
+      .cal_holder > div:nth-child(n+40) {border-bottom:0px solid #ccc;}
+
+    	div span{
+    		position:absolute;
+    		left:0;
+    		top:0;
+    		right:0;
+    		bottom:0;
+    		line-height:30px;
+    		padding:0;
+    		text-align:center;
+    	}
+	    .cal_holder{ 
+        font-family: Geneva, Arial, Helvetica, sans-serif;
+        font-size: 13px;
+        padding:0;     
+        -moz-box-shadow: 0 0 10px rgba(0,0,0,0.5); /* Для Firefox */
+        -webkit-box-shadow: 0 0 10px rgba(0,0,0,0.5); /* Для Safari и Chrome */
+        box-shadow: 0 0 10px rgba(0,0,0,0.5); /* Параметры тени */ 
+      }
+	  
+      .selected ~ div {background: #DED9DB;}
+      .selected ~ .selected {background: #DED9DB;}
+      .selected ~ .selected ~ div {background: #FFF;}
+    </style>
+  </head>
+
+  <body>
+	  <div class="cal_holder">
+      <div><span>пн</span></div>
+      <div><span>вт</span></div>
+      <div><span>ср</span></div>
+      <div><span>чт</span></div>
+      <div><span>пт</span></div>
+      <div><span>сб</span></div>
+      <div><span>вс</span></div><br>
+      <div><span>&nbsp;</span></div>
+      <div><span>&nbsp;</span></div>
+      <div><span>1</span></div>
+      <div><span>2</span></div>
+      <div><span>3</span></div>
+      <div><span>4</span></div>
+      <div><span>5</span></div><br>
+      <div><span>6</span></div>
+      <div><span>7</span></div>
+      <div><span>8</span></div>
+      <div><span>9</span></div>
+      <div><span>10</span></div>
+      <div><span>11</span></div>
+      <div><span>12</span></div><br>
+      <div><span>13</span></div>
+      <div><span>14</span></div>
+      <div><span>15</span></div>
+      <div><span>16</span></div>
+      <div><span>17</span></div>
+      <div class="selected"><span>18</span></div>
+      <div><span>19</span></div><br>
+      <div><span>20</span></div>
+      <div><span>21</span></div>
+      <div><span>22</span></div>
+      <div><span>23</span></div>
+      <div><span>24</span></div>
+      <div class="selected"><span>25</span></div>
+      <div><span>26</span></div><br>
+      <div><span>27</span></div>
+      <div><span>28</span></div>
+      <div><span>29</span></div>
+      <div><span>30</span></div>
+      <div><span>31</span></div>
+      <div><span>&nbsp;</span></div>
+      <div><span>&nbsp;</span></div>
+    </div>
+  </body>
+</html>

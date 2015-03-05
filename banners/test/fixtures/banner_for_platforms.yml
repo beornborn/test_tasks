@@ -1,0 +1,17 @@
+# Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/Fixtures.html
+
+one:
+  banner: 
+  platform: 
+  max_views: 1
+  amount_views: 1
+  amount_clicks: 1
+  default: false
+
+two:
+  banner: 
+  platform: 
+  max_views: 1
+  amount_views: 1
+  amount_clicks: 1
+  default: false

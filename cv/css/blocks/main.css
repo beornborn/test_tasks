@@ -1,0 +1,67 @@
+/*main */
+
+.main {
+}
+.main__img-container {
+	float: left;
+	width: 350px;
+}
+.main__img-container-photo {
+	width: 350px;
+	height: 400px;
+}
+.main__description {
+	float: left;
+	width: 296px;
+	margin: 9px 50px 0px 0px;
+	font-size: 13px;
+}
+.main__description-title {
+	margin-bottom: 20px;
+	font-size: 16px;
+	font-weight: bold;
+}
+.main__description-links {
+	margin-bottom: 20px;
+}
+.main__description-links-contact {
+	margin: 5px 0px 5px 0px;
+}
+.main__description-links-contact-link {
+	color: #009AFF;
+	text-decoration: none;
+}
+.main__description-links-contact-link:visited {
+	color: #009AFF;
+}
+.main__description-links-contact-link:active {
+	color: #009AFF;
+}
+.main__description-links-contact-link:hover {
+	color: #1111e1;
+}
+.main__description-desired-salary {
+	font-size: 13px;
+	font-weight: bold;
+}
+.main__description-desired-position {
+	margin-bottom: -7px;
+	font-size: 13px;
+	font-weight: bold;
+}
+
+.main__description-overview-title{
+	font-weight: bold;
+	color:#009AFF;
+	margin-top: 146px;
+	font-size: 18px;
+}
+
+.main__description-overview-content{
+    padding-top: 413px;
+	line-height: 26px;
+	font-size: 13px;
+	letter-spacing: 2px;
+}
+
+/*end main */
