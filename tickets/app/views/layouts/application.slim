@@ -1,0 +1,24 @@
+doctype html
+html lang='en'
+  head
+    meta content='text/html; charset=utf-8' http-equiv='Content-Type'
+
+    = stylesheet_link_tag 'application', media: 'all', 'data-turbolinks-track' => true
+    = javascript_include_tag 'application', 'data-turbolinks-track' => true
+    = csrf_meta_tags
+
+  body
+    .container-fluid
+      .row
+        .col-md-12
+          .nav.pull-right
+            - if current_user
+              = link_to "Logout", :logout, method: :post, class: 'btn btn-danger logout-link', role: 'button'
+            - else
+              = link_to "Login", :login unless login_page
+      .row
+        .col-md-12.notices
+          = bootstrap_flash
+
+    = yield
+
