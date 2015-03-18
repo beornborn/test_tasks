@@ -3,7 +3,9 @@
     .col-md-12
       .login-container.center-block
         .page-header
-          h1 Login
+          h1
+            | Login
+            small.left-buffer-med for staff only
 
         = form_tag user_sessions_path, method: :post do |_|
           .form-group

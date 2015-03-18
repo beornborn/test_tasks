@@ -1,0 +1,7 @@
+- user_name = comment.user || 'Guest'
+- classes = user_name == 'Guest' ? 'col-md-9' : 'col-md-9 col-md-offset-3'
+.comment class="no-padding panel panel-success #{classes}"
+  .panel-heading
+    = user_name
+  .panel-body
+    = comment.body

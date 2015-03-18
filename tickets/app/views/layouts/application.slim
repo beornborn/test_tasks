@@ -11,14 +11,18 @@ html lang='en'
     .container-fluid
       .row
         .col-md-12
+          .nav.pull-left
+            = link_to 'Dashboard', tickets_path, class: 'btn btn-primary padding-top-md'
           .nav.pull-right
             - if current_user
-              = link_to "Logout", :logout, method: :post, class: 'btn btn-danger logout-link', role: 'button'
+              = link_to "Logout", :logout, method: :post, class: 'btn btn-danger padding-top-md', role: 'button'
             - else
-              = link_to "Login", :login unless login_page
+              = link_to "Login", :login, class: 'btn btn-info padding-top-md', role: 'button' unless login_page
       .row
-        .col-md-12.notices
+        .col-md-10.col-md-offset-1.notices
           = bootstrap_flash
-
-    = yield
+    .container-fluid
+      .row
+        .col-md-10.col-md-offset-1
+          = yield
 

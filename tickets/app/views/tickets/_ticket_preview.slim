@@ -1,0 +1,23 @@
+.ticket-preview.well
+  table.table.no-border
+    tr
+      td= ticket.name
+      td
+        .pull-right.text-info = ticket.department.humanize
+  p
+    strong= ticket.subject
+  p.small= link_to truncate(ticket.description, length: 100), ticket_path(id: ticket.uref)
+  table.table.no-border
+    tr
+      td width='50%'
+        - if ticket.user
+          .small
+            | Assignee:
+            span.text-info= " #{ticket.user}"
+      td
+        .pull-right= tag_label(ticket.state.humanize.downcase, label_for_ticket(ticket))
+
+    tr colspan=2
+      td
+        - if ticket.comments.present?
+          = "Comments: #{ticket.comments.count}"

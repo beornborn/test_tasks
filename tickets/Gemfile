@@ -29,6 +29,8 @@ gem 'slim'
 gem "therubyracer"
 gem "less-rails"
 gem "twitter-bootstrap-rails"
+gem 'awesome_print'
+gem "transitions", :require => ["transitions", "active_model/transitions"]
 
 # Use ActiveModel has_secure_password
 # gem 'bcrypt', '~> 3.1.7'

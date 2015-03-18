@@ -1,0 +1,11 @@
+.container-fluid
+  .row
+    .col-md-4.tickets_column
+      h4.text-center new
+      = render partial: 'tickets/ticket_preview', collection: @tickets_fresh, as: :ticket
+    .col-md-4.tickets_column
+      h4.text-center in process
+      = render partial: 'tickets/ticket_preview', collection: @tickets_in_process, as: :ticket
+    .col-md-4.tickets_column
+      h4.text-center done
+      = render partial: 'tickets/ticket_preview', collection: @tickets_done, as: :ticket

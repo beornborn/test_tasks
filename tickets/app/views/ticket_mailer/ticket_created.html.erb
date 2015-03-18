@@ -1,0 +1,25 @@
+<h1>Ticket created with #<%= @ticket.uref %></h1>
+<p>
+  Name: <%= @ticket.name %>
+  <br>
+</p>
+<p>
+  Email: <%= @ticket.email %>
+  <br>
+</p>
+<p>
+  Department: <%= @ticket.department %>
+  <br>
+</p>
+<p>
+  Subject: <%= @ticket.subject %>
+  <br>
+</p>
+<p>
+  Description: <%= @ticket.description %>
+  <br>
+</p>
+
+<p>You can monitor status of your ticket
+  <%= link_to 'here', ticket_url(id: @ticket.uref) %>
+</p>
