@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:p="http://www.springframework.org/schema/p"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans
+    http://www.springframework.org/schema/beans/spring-beans-2.5.xsd"
+	xmlns:context="http://www.springframework.org/schema/context">
+
+
+	<!-- get database properties -->
+	<bean
+		class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">
+		<property name="locations">
+			<value>classpath:testDBConnection.properties</value>
+		</property>
+	</bean>
+	<bean id="propertiesDataHolder"
+		class="springapp.database.PropertiesDataHolder">
+		<property name="driverClass" value="${driver_class}" />
+		<property name="connectionUrl" value="${connection_url}" />
+		<property name="username" value="${username}" />
+		<property name="password" value="${password}" />
+		<property name="testSchema" value="${testschema}" />
+	</bean>
+
+	<!-- DAO -->
+	<bean id="dataSource"
+		class="org.springframework.jdbc.datasource.DriverManagerDataSource">
+		<property name="driverClassName" value="${driver_class}" />
+		<property name="url" value="${connection_url}" />
+		<property name="username" value="${username}" />
+		<property name="password" value="${password}" />
+	</bean>
+
+	<bean id="dbi" class="springapp.database.DAO">
+		<property name="workSchema" value="${testschema}" />
+		<property name="dataSource" ref="dataSource" />
+	</bean>
+
+	<bean id="divisionsservice" class="springapp.service.DivisionsService">
+		<property name="idao" ref="dbi" />
+	</bean>
+	<bean id="employeesservice" class="springapp.service.EmployeesService">
+		<property name="idao" ref="dbi" />
+		<property name="idivser" ref="divisionsservice" />
+	</bean>
+</beans>

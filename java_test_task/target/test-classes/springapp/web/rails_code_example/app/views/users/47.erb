@@ -1,0 +1,14 @@
+<h1 id="myprofile_title">My Profile</h1>
+
+<div id="myprofile_info">
+  <div class="profile_header">
+    <div class="profile_userpic">
+      <%= image_tag(getUserAvatarForProfile(current_user), class: "fl-l", alt: "Avatar", title: "Avatar", size: "48x48") %>
+    </div>
+    <div class="profile_username">
+      <h3><%=truncate(current_user.crop_name, :length => 35)%></h3>
+      <%= parent_nickname_link(current_user) %>
+    </div>
+    <div class="clr"></div>
+  </div>
+</div>

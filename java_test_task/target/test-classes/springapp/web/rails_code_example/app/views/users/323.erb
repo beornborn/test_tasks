@@ -1,0 +1,43 @@
+<div style="">
+  <div id="sitemap_box" >
+    <div id="popupform">
+      <h2>Sitemap</h2>
+
+      <div id="siteMap">
+        <a name="top"></a>
+        <div class="row clearfix">
+
+          <ul>
+            <li class="first">
+              <h4>landing Page</h4>
+            </li>
+            <%if current_user%>
+              <li><%=link_to "Welcome #{urrent_user.user_name}", users_home_path%></li>
+              <li><%=link_to "Settings", user_settings_path%></li>
+              <li><%=link_to "Sign Out", destroy_user_session_path%></li>
+
+            <%else%>
+              <li><%=link_to "Sign In", new_user_session_path%></li>
+              <li><%=link_to "Create Account", new_user_session_path%></li>
+              <li><%=link_to "Search entitys", search_entitys_path%></li>
+            <%end%>
+            <li><%=link_to "Contact Us", new_user_session_path%></li>
+            <li><%=link_to "Terms of Use", new_user_session_path%></li>
+            <li><%=link_to "Privacy Policy", search_entitys_path%></li>
+
+          </ul>
+
+          <%if current_user%>
+            <ul>
+              <li class="first">
+                <h4>Home Page</h4>
+              </li>
+              <li><%=link_to "Welcome #{urrent_user.user_name}", users_home_path%></li>
+
+            </ul>
+          <%end%>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

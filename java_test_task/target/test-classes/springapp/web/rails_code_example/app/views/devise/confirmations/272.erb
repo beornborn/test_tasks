@@ -1,0 +1,19 @@
+<div id="popupform" style="font-family: 'Helvetica Neue' !important;
+     font-weight: bold;
+     color: gray;
+     font-size: 11px;
+     margin: 10px 0 15px 0;
+     padding: 0;">
+  <h2>Resend confirmation instructions</h2>
+  <div class="clear" style="margin-bottom: 5px;"></div>
+  <%= form_for(resource, :as => resource_name, :url => confirmation_path(resource_name), :html => { :method => :post }) do |f| %>
+    <%= devise_error_messages! %>
+
+    <div><%= f.label :email %><br />
+      <%= f.email_field :email %></div>
+
+    <div><%= f.submit "Resend confirmation instructions" %></div>
+  <% end %>
+
+  <%= render :partial => "devise/shared/links" %>
+</div>

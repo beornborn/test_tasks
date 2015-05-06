@@ -1,0 +1,15 @@
+<%if index == 0 && state=="expanded" %>
+    <div class="comment comment_first">
+        <p class="comment_text">
+            <span class="comment_username"><%=getUserNameBfComment(reply)%></span>
+            <%=truncate_words(reply.body, 30, "...", reply.id).html_safe %>
+        </p>
+    </div>
+<%else%>
+    <div class="comment comment_min">
+      <p class="comment_text">
+            <span class="comment_username"><%=getUserNameBfComment(reply)%></span>
+            <%=truncate_words(reply.body, 30, "...", reply.id).html_safe %>
+      </p>
+    </div>
+<%end%>

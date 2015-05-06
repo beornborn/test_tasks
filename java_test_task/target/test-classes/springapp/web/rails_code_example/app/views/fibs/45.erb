@@ -1,0 +1,43 @@
+<div class="entity" entityId="<%=my_entity.id%>" id="my_entity_block_<%=my_entity.id%>">
+  <div class="entity_userpic">
+    <%= getUserAvatarLink(my_entity) %>
+    </div>
+    <div class="entity_wrap">
+      <div class="entity_body">
+        <p class="entityusername"><%=getUserName(my_entity)%></p>
+        <p class="entitytext"><%=truncate_words(my_entity.body, 30, "...", my_entity.id).html_safe %></p>
+      </div>
+
+      <div class="entity_button">
+        <%if my_entity.replies.size > 0%>
+          <%  if @my_replies_count[my_entity.id]>0 then %>
+            <div  class="count_comments">
+              <span id="replies_count"><%=@my_replies_count[my_entity.id]%></span>
+            </div>
+          <% end %>
+          <%if my_entity.replies.size>20 %>
+            <%=link_to getViewAllCommentsFromAllPages(my_entity), load_all_comments_entity_path(:id=>my_entity.id, :page=>1, :type=>"my_entitys"), :entityId=>my_entity.id.to_s(10),
+              :method=>:post, :remote=>true, :page=>1,:id=>"really_all_my_comments_link_"+my_entity.id.to_s(10),
+              :"data-type" => "html",  :class=>"btn_sml comments_viewall_button red"%>
+          <% end %>
+          <%=formatentityLikeNumber(my_entity, "my_entity").html_safe%>
+        <%end%>
+
+        <div class="clr"></div>
+      </div>
+      <div class="clr"></div>
+
+      <div id="my_comment_stream_<%=my_entity.id%>">
+        <%= render :partial => "entitys/my_comments_collapsed", :locals => {:my_entity => my_entity}, :layout=>false %>
+      </div>
+    </div>
+    <div class="entity_delete_min">
+      <!--<a href="#" class="button_delete_min">&nbsp</a>-->
+      <%=link_to "", "#delete_entity_popup_"+my_entity.id.to_s(10), :entityId=>my_entity.id,
+        :id=>"delete_my_entity_"+my_entity.id.to_s(10), :class=>"button_delete_min", :style=>"display: none;"%>
+    </div>
+    <div class="clr"></div>
+    <div id="my_ajax_loader_<%=my_entity.id%>" class="ajax_loader no-disp">
+      <%=image_tag("ajax_loader_small.gif")%>
+    </div>
+  </div>

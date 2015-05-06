@@ -1,0 +1,54 @@
+<style>html { position: relative; } /* Фикс для оперы */
+  html {overflow:auto !important;}
+  body {background: #F5F5F5;}
+</style>
+
+<div id="login_popup" class="popup">
+  <div id="quick_connect_errors_login" style="display: none"></div>
+  <div id="response_area_login"></div>
+  
+  <div class="header">
+    <h1>Login</h1>
+    <div class="quick_connect">
+      Quick Connect: 
+      <%=link_to "Facebook Connect", "javascript:void()", {:id=>"fb_connect", :class=>"social facebook"}%>
+      <%=link_to "Twitter Connect", "javascript:void()", {:id=>"twitter_connect", :class=>"social twitter"}%>
+    </div>
+    <div class="clr"></div>
+  </div>
+  
+  <%=f.text_field "email", {class: "form", size: "30",  placeholder: "Email or Username"}%>
+  <%=f.password_field "password", {class: "form", size: "30",  placeholder: "Password"}%>
+  
+
+  <div class="login_button fl-r">
+          <%=link_to "Forgot Password?", new_user_password_path, {id: "forget_password_link"}%>
+          <%=submit_tag "Login", size: "30", class: "btn_red"%>
+  </div> 
+  <div class="clr"></div>
+
+  <div class="sign_up fl-r">
+    Need an account? <%=link_to "Sign Up", '/blank_page_new_user_registration', {:id=>"signup_link"}%>
+  </div> 
+
+  <div class="clr"></div>
+
+</div>
+<script>
+  $(document).ready(function(){
+
+    $('#fb_connect').click(function(){
+      window.parent.location = "http://"+"<%=request.host_with_port%>"+"/auth/facebook";
+    });
+
+    $('#twitter_connect').click(function(){
+      window.parent.location = "http://"+"<%=request.host_with_port%>"+"/auth/twitter";
+    });
+
+    <%#*$('#signup_link').bind("click", function(){%>
+      <%#*window.parent.$("#fancybox-wrap").width(380).height(480);%>
+      <%#*window.parent.$('#fancybox-content').width(360).height(460);%>
+      <%#*window.parent.$.fancybox.center();%>
+    <%#*});%>
+  });
+</script>

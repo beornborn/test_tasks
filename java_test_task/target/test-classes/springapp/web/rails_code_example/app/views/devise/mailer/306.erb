@@ -1,0 +1,63 @@
+<%  if @resource.class.to_s.tableize=="admin_users" then%>
+    <p>Hello <%= @resource.email %>!</p>
+
+<p>Someone has requested a link to change your password, and you can do this through the link below.</p>
+<% changed_link=edit_password_url(@resource, :reset_password_token => @resource.reset_password_token)
+  changed_link["admin_users"]="admin"%>
+<p><%= link_to 'Change my password',  changed_link %></p>
+
+<p>If you didn't request this, please ignore this email.</p>
+<p>Your password won't change until you access the link above and create a new one.</p>
+<% else %>
+<!doctype html>
+<html>
+<body style="margin: 0;
+      background-color: #f5f5f5;
+      font: 12px/14px 'Helvetica Neue', Helvetica, Arial, sans-serif !important;
+      color: #888;
+      height: 100%;
+      width: 100%;">
+<div id="message_wrap" style="width: 500px;
+      padding: 20px 40px 40px 40px;
+      margin: 0 auto;
+       color: #888;
+      background-color: #f5f5f5;">
+  <div id="message" style="color: #888;
+      position:relative;
+      width: 500px;
+      background-color: #f5f5f5;">
+
+    <div id="top" style="width: 100%; margin: 0 2px 0 -1px; padding: 0 2px 0 0; height: 50px;
+         background: #252526;">
+      <div id="logo" style="padding: 12px 0 0 16px;">
+        <a href="http://www.entitys.com/" title="entitys Homepage" style="color:#00AEEF; text-decoration:none;">
+          <%= image_tag attachments['logo.png'].url %>
+        </a>
+      </div>
+    </div>
+
+    <div id="body" style="padding: 12px 16px 24px 16px;">
+      <p style="padding-bottom: 20px; font-weight:bold; color: #888 !important; ">
+        Hello <%= @resource.user_name %>,
+      </p>
+
+      <p style="padding-bottom: 20px; font-weight:bold; color: #888 !important; ">Someone has requested a link to change your password, and you can do this through the link below.</p>
+
+      <p style="padding-bottom: 20px; font-weight:bold; color: #888 !important; ">If you didn't request this, please ignore this email.</p>
+      <p style="padding-bottom: 20px; font-weight:bold; color: #888 !important; ">Your password won't change until you access the link above and create a new one.</p>
+
+      <%= link_to edit_password_url(@resource, :reset_password_token => @resource.reset_password_token), edit_password_url(@resource, :reset_password_token => @resource.reset_password_token), style: "color:#00AEEF; text-decoration:none; font-weight:bold" %>
+      <br/>
+      <br/>
+      <p style="padding-bottom: 20px; font-weight:bold; color: #888 !important; ">
+      Thank you,<br/>
+      The entitys Team<br/>
+      <%= mail_to "support@entitys.com", "support@entitys.com", style: "color:#00AEEF; text-decoration:none;"%>
+      </p>
+    </div>
+  </div>
+</div>
+</body>
+</html>
+
+<% end %>

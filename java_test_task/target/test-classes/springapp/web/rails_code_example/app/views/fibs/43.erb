@@ -1,0 +1,18 @@
+<div class="comment_stream">
+  <%replies.each_with_index do |reply, index|%>
+    <%= render :partial => "entitys/my_comment", :locals => {:reply => reply, :index => index, :size => replies.size, :state=>"expanded"} %>
+  <%end%>
+  <div class="clr"></div>
+</div>
+<div id="my_comments_button_container_<%=my_entity.id%>">
+  <% if page=="all_comments"  %>
+    <span id="last_page_<%=my_entity.id.to_s(10)%>" class="no-disp"></span>
+  <% else %>
+    <%=link_to getViewAllCommentsLinkTitle(my_entity, page), load_comments_entity_path(:id=>my_entity.id, :page=>page, :type=>"my_entitys"), :entityId=>my_entity.id,
+      :id=>"all_my_comments_link_"+my_entity.id.to_s(10), :page=>page,
+      :method=>:post, :remote=>true, :"data-type" => "html", :class=>getViewAllCommentsLinkState(my_entity, page)%>
+  <% end %>
+  <%=link_to "collapse comments", collapse_comments_entity_path(:id=>my_entity.id, :type=>"my_entitys"), :entityId=>my_entity.id,
+    :id=>"collapse_my_comments_link_"+my_entity.id.to_s(10), :method=>:post, :remote=>true, :"data-type" => "html",
+    :class=>"comments_close_button btn_sml"%>
+</div>

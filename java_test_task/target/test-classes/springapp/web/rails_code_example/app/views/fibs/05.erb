@@ -1,0 +1,14 @@
+<% id=1 %>
+<%breakingentity.bf_comments.order("created_at ASC").page(page-1).per(20).each_with_index do |reply, index|%>
+    <%= render :partial => "entitys/bf_comment", :locals => {:reply => reply, :index=> index, :state=>"lazy"} %>
+<% id = reply.breakingentity_id %>
+<%end%>
+<div id="comments_button_container_breakingentitys_<%=id%>">
+  <%=link_to getViewAllCommentsLinkTitleBfComments(breakingentity, page), load_comments_breakingentity_path(:id=>breakingentity.id, :page=>page),
+                       :entityId=>"breakingentitys_#{id}", :id=>"all_comments_link_breakingentitys", :page=>page,
+                       :method=>:post, :remote=>true, :"data-type" => "html", :class=>getViewAllCommentsLinkStateBfComments(breakingentity, page)%>
+  <%=link_to "collapse comments", collapse_comments_breakingentity_path(:id=>breakingentity.id), :entityId=>"breakingentitys_#{id}",
+             :id=>"collapse_comments_link_breakingentitys", :method=>:post, :remote=>true,
+             :"data-type" => "html", :class=>"comments_close_button btn_sml"%>
+  <div class="clr"></div>
+</div>

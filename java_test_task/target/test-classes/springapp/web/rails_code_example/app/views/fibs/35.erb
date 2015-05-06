@@ -1,0 +1,11 @@
+<nav>
+<ul>
+  <li><%= link_to ('Home<span></span>').html_safe, root_path, class: page == "home" ? "home" : "" %></li>
+  <li><%= link_to ('Post<span></span>').html_safe, new_entity_path, class: page == "post" ? "post" : "" %></li>
+  <% unless current_user %> 
+  <li><%= link_to ("Login<span></span>").html_safe, new_user_session_path, class: (page == "login" or page == "my_entitys") ? page : ""%></li>
+  <% else %>
+  <li><%= link_to ((current_user.user_name.present? ? getTruncatedUserNameSmall(current_user) : '...')+'<span></span>').html_safe, users_home_path, class: (page == "login" or page == "my_entitys") ? page : "" %></li>
+  <% end %>
+</ul>
+</nav>

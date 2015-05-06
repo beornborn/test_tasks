@@ -1,0 +1,61 @@
+<div id="footer">
+  <ul class="footermenu">
+  <!--
+    <li><%=link_to "About", "#about_us_box", :id=>"about_us_link"%></li> -->
+    <li><%=link_to "Contact Us", "/contact_us", {:id=>"contact_us_link", :title=>"Contact Us"} %></li>
+  <!--  <li><%=link_to "Site Map", "#sitemap_box", :id=>"sitemap_link"%></li> -->
+    <li><%=link_to "Terms of Use", "#toc_box", :id=>"toc_link"%></li>
+    <li><%=link_to "Privacy", privacy_path, :id=>"privacy_link"%></li>
+    <li><span class="copyright">&#169;2012 entitys, LLC</span></li>
+    <% if session[:mobile_view]==false%>
+    <li><%=link_to "view mobile", {:controller => "entitys", :action => "change_layout"}, :id=>"change_layout_link", :class=>"vm_link"%></li>
+    <% end %>
+  </ul>
+</div>
+
+<%=render :partial => "shared/about_us"%>
+<%=render :partial => "shared/sitemap"%>
+<%=render :partial => "shared/toc"%>
+<script>
+    $(document).ready(function() {
+  $("#about_us_link").fancybox();
+  $("#contact_us_link").fancybox({
+    'autoScale'			: false,
+    'width':390,
+    'height':600,
+    "opacity":true,
+    'transitionIn'		: 'fade',
+    'transitionOut'		: 'fade',
+    'type'			: 'iframe',
+    'titleShow':false
+  });  
+  $("#sitemap_link").fancybox();
+  $("#toc_link").fancybox({
+  'autoScale'			: true,
+  'width':750,
+  'height':400,
+  'autoDimensions': true,
+   'transitionIn'		: 'fade',
+  'transitionOut'		: 'fade'
+  });
+  $("#privacy_link").fancybox({
+  'autoScale'			: false,
+  'width':750,
+  'height':400,
+  'autoDimensions': true,
+  'transitionIn'		: 'fade',
+  'transitionOut'		: 'fade',
+  'enableEscapeButton': true,
+  ajax: {
+            type: "GET"
+        }
+  });
+        <%if params[:destination] == "privacy"%>
+            $("#privacy_link").fancybox().trigger('click');
+        <%elsif params[:destination] == "terms"%>
+            $("#toc_link").fancybox().trigger('click');
+        <%elsif params[:destination] == "contact_us"%>
+            $("#contact_us_link").fancybox().trigger('click');
+        <%end%>
+    });
+</script>

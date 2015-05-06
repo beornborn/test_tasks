@@ -1,0 +1,39 @@
+<div id="popupform" class="popup reset_pass">
+  <div id="response_area"></div>
+  <%= form_for(resource, :as => resource_name, :url => password_path(resource_name), :html => { :method => :put, :id=>"reset_password_form" }) do |f| %>
+    <%= devise_error_messages! %>
+    <%=f.hidden_field :reset_password_token, {:value => resource.reset_password_token}%>
+  
+    <div class="header">
+      <h1>Reset Password</h1>
+      <div class="clr"></div>
+    </div>
+  
+    <div style="max-width: 350px;">
+      <%=f.password_field "password", {class: "form", size: "30",  placeholder: "New password"}%>
+      <%=f.password_field "password_confirmation", {class: "form", size: "30",  placeholder: "Confirm new password"}%>
+      
+      <div class="login_button fl-r">
+        <%=submit_tag "Save", size: "30", class: "btn_red"%>
+      </div> 
+    </div>
+
+  <% end %>
+</div>
+<script>
+  $(document).ready(function(){
+    $('input').placeholder();
+    
+    $('#reset_password_form')
+    .bind("ajax:success", function(evt, data, status, xhr){
+      $('#reset_password_form').fadeOut();
+      $('#response_area').html("Your password has been reset.");      
+    })
+    .bind("ajax:error", function(evt, xhr, status, error){
+      $('#response_area').html(xhr.responseText);
+    });
+
+  })
+
+</script>
+<%#= render :partial => "devise/shared/links" %>

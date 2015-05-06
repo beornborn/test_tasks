@@ -1,0 +1,5 @@
+springapp.database
+springapp.domain
+springapp.service
+springapp.validator
+springapp.web

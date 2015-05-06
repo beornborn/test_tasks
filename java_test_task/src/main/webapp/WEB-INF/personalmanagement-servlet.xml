@@ -1,0 +1,134 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:p="http://www.springframework.org/schema/p"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans
+    http://www.springframework.org/schema/beans/spring-beans-2.5.xsd"
+	xmlns:context="http://www.springframework.org/schema/context">
+		
+	<!-- get database properties -->
+	<bean class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">
+		<property name="locations">
+			<value>classpath:DBConnection.properties</value>
+		</property>
+	</bean>
+
+
+	<!-- DAO -->
+	<bean id="dataSource"
+		class="org.springframework.jdbc.datasource.DriverManagerDataSource">
+		<property name="driverClassName" value="${driver_class}" />
+		<property name="url" value="${connection_url}" />
+		<property name="username" value="${username}" />
+		<property name="password" value="${password}" />
+	</bean>
+
+	<bean id="dbi" class="springapp.database.DAO">
+		<property name="workSchema" value="${workschema}" />
+		<property name="dataSource" ref="dataSource" />
+	</bean>
+	
+
+	<!-- validators -->
+	<bean id="addformvalid" class="springapp.validator.AddFormSubmitValidator" />
+	<bean id="editformvalid" class="springapp.validator.AddFormSubmitValidator" />
+	<bean id="divaddformvalid" class="springapp.validator.DivisionAddFormSubmitValidator">
+		<property name="idivser" ref="divisionsservice" />
+	</bean>
+	<bean id="diveditformvalid" class="springapp.validator.DivisionEditFormSubmitValidator">
+		<property name="idivser" ref="divisionsservice" />
+	</bean>
+
+	<!-- services -->
+	<bean id="divisionsservice" class="springapp.service.DivisionsService">
+		<property name="idao" ref="dbi" />
+	</bean>
+	<bean id="employeesservice" class="springapp.service.EmployeesService">
+		<property name="idao" ref="dbi" />
+		<property name="idivser" ref="divisionsservice" />
+	</bean>
+
+
+	<!-- controllers -->
+	<!-- add/edit/delete/rnd -->
+	<bean name="/login.htm" class="springapp.web.LoginController" />
+	<bean name="/addform.htm" class="springapp.web.AddFormControllerSubmit"
+		p:formView="addform" p:successView="list" p:validator-ref="addformvalid">
+		<property name="idivser" ref="divisionsservice" />
+		<property name="iempser" ref="employeesservice" />
+		<property name="commandClass" value="springapp.web.FormEmployee" />
+		<property name="commandName" value="formemployee" />
+		<property name="sessionForm" value="true" />
+	</bean>
+	<bean name="/editform.htm" class="springapp.web.EditFormControllerSubmit"
+		p:sessionForm="true" p:formView="editform" p:successView="list"
+		p:validator-ref="editformvalid">
+		<property name="idivser" ref="divisionsservice" />
+		<property name="iempser" ref="employeesservice" />
+		<property name="commandClass" value="springapp.web.FormEmployee" />
+		<property name="commandName" value="formemployee" />
+	</bean>
+	<bean name="/divisionaddform.htm" class="springapp.web.DivisionAddFormControllerSubmit"
+		p:formView="divisionaddform" p:successView="divisionist"
+		p:validator-ref="divaddformvalid">
+		<property name="idivser" ref="divisionsservice" />
+		<property name="commandClass" value="springapp.web.FormDivision" />
+		<property name="commandName" value="formdivision" />
+		<property name="sessionForm" value="true" />
+	</bean>
+	<bean name="/divisioneditform.htm" class="springapp.web.DivisionEditFormControllerSubmit"
+		p:sessionForm="true" p:formView="divisioneditform" p:successView="divisionlist"
+		p:validator-ref="diveditformvalid">
+		<property name="idivser" ref="divisionsservice" />
+		<property name="commandClass" value="springapp.web.FormDivision" />
+		<property name="commandName" value="formdivision" />
+	</bean>
+	<bean name="/delete.htm" class="springapp.web.DeleteController">
+		<property name="iempser" ref="employeesservice" />
+	</bean>
+	<bean name="/divisiondelete.htm" class="springapp.web.DivisionDeleteController">
+		<property name="idivser" ref="divisionsservice" />
+	</bean>
+	<bean name="/rnd.htm" class="springapp.web.RNDController">
+		<property name="iempser" ref="employeesservice" />
+	</bean>
+	
+	<!-- list/view controllers -->
+	<bean name="/list.htm" class="springapp.web.ListController"
+		p:formView="list" p:successView="list">
+		<property name="iempser" ref="employeesservice" />
+		<property name="commandClass" value="springapp.web.SearchEntity" />
+		<property name="commandName" value="searchentity" />
+	</bean>
+	<bean name="/divisionlist.htm" class="springapp.web.DivisionListController">
+		<property name="idivser" ref="divisionsservice" />
+	</bean>
+	<bean name="/employee.htm" class="springapp.web.EmployeeController">
+		<property name="iempser" ref="employeesservice" />
+	</bean>
+	<bean name="/divisionview.htm" class="springapp.web.DivisionController">
+		<property name="idivser" ref="divisionsservice" />
+	</bean>
+	
+	<!-- other -->
+	<bean id="messageSource"
+		class="org.springframework.context.support.ResourceBundleMessageSource">
+		<property name="basename" value="messages" />
+	</bean>
+	
+	<bean id="freemarkerConfig"
+		class="org.springframework.web.servlet.view.freemarker.FreeMarkerConfigurer">
+		<property name="templateLoaderPath" value="/WEB-INF/freemarker/" />
+		<property name="defaultEncoding" value="UTF-8" />
+	</bean>
+	
+	<bean id="viewResolver" class="org.springframework.web.servlet.view.freemarker.FreeMarkerViewResolver"> 
+		<property name="cache" value="true"/> 
+		<property name="prefix" value=""/> 
+		<property name="suffix" value=".ftl"/> 
+		<property name="exposeSpringMacroHelpers" 
+		value="true"/>
+		<property name="contentType" value="UTF-8" />
+	</bean>
+	
+</beans>

@@ -1,0 +1,80 @@
+<body class="login">
+  <div id="container">
+    <header>
+     <section class="clearfix">
+      <figure>
+       <p><%= image_tag 'mobile/entitys-logo.png', width: "82", height: "28", alt: "entitys Logo" %></p>
+      </figure>
+      <h1>Login</h1>
+      <%= render :partial => "entitys/logout_header_mobile" %>
+     </section>  
+     <%= render :partial => "entitys/header_mobile", :locals => {:page => 'login'} %>
+    </header>
+    <div id="error_box"></div>
+    <div id="main" role="main">
+     <%= form_for(resource, :as => resource_name, :url => session_path(resource_name), :remote=>"true", :html=>{:id => 'log_in_form', "data-type"=>"html"}) do |f| %>
+      <%= f.label 'Email or Username' %>
+      <%=f.text_field "email", {id: "TXTuserName"}%>
+      <%= f.label 'Password' %>
+      <%=f.password_field "password", {id: "PSWpass"}%>
+     <% end %> 
+    </div>
+  </div><!--! end of #container -->
+  
+   <footer>
+     <p>
+   <%= link_to 'Login', '#', id: "login_button", onclick: 'return false;' %>
+   <%=link_to "Forgot Password", new_user_password_path, {id: "forget_password_link"}%>
+   <%=link_to "Create Account", new_user_registration_path%>
+     </p>
+   <section class="clearfix">
+    <ul>
+     <li><%=link_to "Facebook", "javascript:void()", {:id=>"fb_connect", :class=>"fb ir"}%></li>
+     <li><%=link_to "Twitter", "javascript:void()", {:id=>"twitter_connect", :class=>"tw ir"}%></li>
+    </ul>
+   </section>
+  </footer>
+  
+</body>
+</html>
+<script type="text/javascript">
+$(document).ready(function(){
+    $('#fb_connect').click(function(){
+      window.parent.location = "http://"+"<%=request.host_with_port%>"+"/auth/facebook";
+    });
+
+    $('#twitter_connect').click(function(){
+      window.parent.location = "http://"+"<%=request.host_with_port%>"+"/auth/twitter";
+    });
+  
+    $("#PSWpass").keypress(function(event){
+        if ((event.which == 13)){
+            event.preventDefault();
+            send_login();
+            return false;
+        }
+    });
+  
+    $('#login_button').click(function(){
+      send_login();
+    });
+    
+    $('#log_in_form')
+    .bind("ajax:success", function(evt, data, status, xhr){
+      window.location='/';
+    })
+    .bind("ajax:error", function(evt, xhr, status, error){
+      $('#error_box').html(xhr.responseText);
+    });
+    
+});    
+
+function send_login(){
+  if($.trim($('#TXTuserName').val()) == "" || $.trim($('#PSWpass').val()) == ""){
+    $('#error_box').html("Input fields can't be blank.");
+  }else{
+    $('#log_in_form').submit();
+  };  
+};
+
+</script>

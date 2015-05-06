@@ -1,0 +1,81 @@
+<body class="my_entitys">
+  <div id="container">
+    <header>
+     <section class="clearfix">
+      <figure>
+       <p><%= image_tag 'mobile/entitys-logo.png', width: "82", height: "28", alt: "entitys Logo" %></p>
+      </figure>
+       <h1><%= image_tag("mobile/word_mobile.png")  %></h1>
+      <%= render :partial => "entitys/logout_header_mobile" %>
+     </section> 
+      <%= render :partial => "entitys/header_mobile", :locals => {:page => 'my_entitys'} %>
+    </header>
+    <div id="main" role="main" class="grayed">
+      <%=form_for "search", :url=>search_entitys_path, :html=>{:id=>"top_search_form", :method=>:get, :onsubmit=>"return checkscript($('#q'))"} do |f|%>
+       <%=search_field_tag "q", nil, value: "Search", :id=>"search_field_tag_home" %>
+      <%end%>
+     <section class="feed">
+       <%= render :partial => "entitys/entitys_my_mobile" %>
+     </section> 
+    </div>
+  </div><!--! end of #container -->
+  
+</body>
+</html>
+<script type="text/javascript">
+  $(document).ready(function(){
+        subscribeLikeEvents();
+  });
+  
+    function subscribeLikeEvents(){
+    $(".feed").on("click", ".button_like", function(){
+      var csrf_data = {};
+      csrf_data[$("meta[name='csrf-param']").attr("content").toString()] = $("meta[name='csrf-token']").attr("content");
+      $.ajax({
+          url: $(this).attr('link'),
+          type: "POST",
+          data: csrf_data,
+          success: function(data, status, xhr) {
+            var resp = data.slice(1, data.length-1).split(",");
+            var location_id = resp[0];
+            var plus_count = resp[1];
+            var str = null;
+            if(plus_count > 1){
+                str = plus_count + " likes";
+            } else{
+                str = plus_count + " like";
+            }
+            $("#rating_count_" + location_id).html( str ).removeClass('no-disp');
+          },
+          error: function(){
+            window.location = '<%= new_user_session_path %>';
+          }
+      });
+    
+      return false;
+    }); 
+
+  };    
+        
+  function checkscript(f) {
+    var search = f.attr("value");
+    if (search.indexOf("#")==0) {
+          search = search.replace(/#/, "");
+    }
+    search=$.trim(search);
+    if (search==""){return false;}
+    f.attr("value", search);
+    return true;
+    };     
+    
+  $("#search_field_tag_home").click(function(){
+    if( $("#search_field_tag_home").attr("value") == "Search"){
+      $("#search_field_tag_home").attr("value", "");
+    }
+  }).mousedown(function(){
+    if( $("#search_field_tag_home").attr("value") == "Search"){
+      $("#search_field_tag_home").attr("value", "");
+    }
+  });
+        
+</script>

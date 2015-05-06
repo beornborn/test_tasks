@@ -1,0 +1,29 @@
+<div id="fb-root"></div>
+<script src="https://connect.facebook.net/en_US/all.js#appId=<%=ENV["FACEBOOK_APP_ID"] || "257475867662068"%>&xfbml=1"></script>
+
+<fb:registration
+  fields="[
+  {'name':'name'},
+  {'name':'email'},
+  {'name':'location'},
+  {'name':'gender'},
+  {'name':'user_name',      'description':'User name for entitys',             'type':'text'},
+  ]"
+  redirect-uri="<%=ENV["APP_INFORMATION_BASE_URI"] || "http://localhost:3000"%>/register_user"
+<%#*onvalidate="validate_async"%>
+  width="530"
+  >
+</fb:registration>
+<script src="http://code.jquery.com/jquery-1.7.1.min.js"></script>
+<script> 
+  function validate_async(form, cb) {
+    $.getJSON('<%=ENV["APP_INFORMATION_BASE_URI"] || "http://localhost:3000"%>/validate_user_name?user_name=' + form.user_name + '&callback=?',
+    function(response) {
+      if (response.error) {
+        // Username isn't taken, let the form submit
+        cb();
+      }
+      cb({username: 'That username is taken'});
+    });
+  }
+</script>

@@ -1,0 +1,502 @@
+<div id="wallentity">
+  <%if flash[:unsubscribe]=="true"%>
+    <div style="display:none;">
+      <%=render :partial => "users/unsubscribe" %>
+    </div>
+  <%end%>
+  <% if params[:controller] == "entitys" and params[:action] == "search" and @entitys.present? and (params[:q].present? or params[:tag].present? ) %>
+  <div style="position: relative; padding-left: 5px; padding-top: 10px">
+    <table align="center" id="no_result_table"><tr><td><p class="entitytext">Search results for <b><%= params[:q].present? ? params[:q] : params[:tag] %></b></p></td></tr></table>
+  </div>
+  <% end %>
+  <%= render(:partial => "entitys/entity", :collection => @entitys) || render(:partial => "entitys/empty") %>
+  <div id="more_content"></div>
+
+  <div id="more"></div>
+  <div class="ajax_loader_lazy no-disp">
+    <%=image_tag("ajax_loader.gif")%>
+  </div>
+  <div id="tag" class="no-disp"><%=@tag%></div>
+  <div id="query" class="no-disp"><%=@q%></div>
+  <% if @link_for_social.present? %>
+  <div id="twitter_share_url_holder" class="no-disp" url="<%=@link_for_social%>"></div>
+  <% end %>
+</div>
+
+<script type="text/javascript">
+  var selected_comment_field = null;
+  var COMMENT_MAX_LENGTH = 140; //comment message max length like in twitter application
+
+  var selectedentityId = null;
+  var commentStateMap = new Array();
+  var page = null;
+  var loading = false; // indicates that request is loading now; preventing multiple requests for
+  //entitys lazy loading at the same time
+  var endOfContentIsReached = false; //indicates when and of entitys is reached
+  //spinner will be hidden and ajax requests will not send to server
+
+  $(document).ready(function(){
+    $(window).click(function(){
+      $('#comment_body_'+selected_comment_field).validationEngine('hide');
+    });
+
+<%#*$("#topbar_wrap").click(function(){%>
+ <%#*$("#change_layout_link").trigger('click');%>
+<%#*});%>
+    page = 1;
+    subscribeEvents();
+<% if controller.action_name == 'home' %>
+      $(window).scroll( function() { lazyLoadContent() } );
+<% end %>
+  });
+    
+  $('#entity_photo').change(function(){
+    $('#post_entity_link_photo').removeClass('addphoto').addClass('addphoto_full');
+  });
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+ <%#*$('input[id^="entity_photo_"]').change(function(){%>
+   <%#*var entityId = $(this).attr('entityId');%>
+    <%#*$('#post_entity_link_photo_'+entityId).removeClass('addphoto').addClass('addphoto_full');%>
+  <%#*});%>
+    
+  /**
+   * Util function for check if user is logged at system
+   * if no that login window will apeear
+   */
+  function checkForAuthorizedUsers(entityId, anonymous){
+    if(<%=current_user.blank?%>){
+      if (entityId!="anonymous_post"){
+        var place_of_request = entityId
+        var tw_state ='false';
+        if ($('input[name=commentreply_twitter]').is(':checked')){
+          tw_state='true';
+        }
+        var fb_state ='false';
+        if ($('input[name=commentreply_facebook]').is(':checked')){
+          fb_state='true';
+        }
+        var ajax_data = {anonymous: anonymous, place_of_request: place_of_request, saved_text: $('#comment_body_'+entityId).val(), twitter_state: tw_state, facebook_state: fb_state};
+        ajax_data[$("meta[name='csrf-param']").attr("content").toString()] = $("meta[name='csrf-token']").attr("content");
+        $.ajax({
+          type: "POST",
+          url: '/keep_post_ajax',
+          data: ajax_data,
+          success: function(response){}
+        });
+        $("#login_link").trigger('click');}
+      return false;
+    }else{
+      return true;
+    }
+  };
+
+  /**
+   * lazy loading entitys
+   * when user scrolls down to the bottom of page
+   * ajax request will be send to server
+   * returned data will be append to special div item
+   */
+  function lazyLoadContent() {
+    var position = $("#more").offset().top;
+    var scrollHeight = $(window).scrollTop() + $(window).height()
+    if ( scrollHeight > position && !loading && !endOfContentIsReached) {
+      $('.ajax_loader_lazy').removeClass('no-disp');
+      page++;
+      loading = true;
+      url = null;
+      if(false == <%=@mode.nil?%> && true == <%=@mode == "search"%>){
+        var tag = null;
+        var q = null;
+        if(false == <%=@tag.blank?%>){
+          tag = $('#tag').html();
+          url = 'lazy_search?tag='+tag+'&page=' + page;
+        }else if(false == <%=@q.blank?%>){
+          q = $('#query').html();
+          url = 'lazy_search?q='+q+'&page=' + page;
+        }else{
+          url = 'lazy_search?page=' + page;
+        }
+      }else{
+        url = 'entitys/lazy_load?page=' + page;
+      }
+      $.ajax({
+        url: url,
+        //url: 'entitys/lazy_load?page=' + page,
+        success: function(data) {
+          $('.ajax_loader_lazy').addClass('no-disp');
+          if(data.length > 0){
+            $('#more_content').append(data);
+            subscribeEvents();
+          }else{
+            endOfContentIsReached = true;
+            $('#wallentity > .ajax_loader').addClass('no-disp');
+          }
+          loading = false;
+        },
+        error: function(){
+          $('.ajax_loader_lazy').addClass('no-disp');
+          loading = false;
+        }
+      });
+    }
+  };
+
+  /**
+   * Subscribe icons with tooltips on:
+   * show tooltip on mouse over event
+   * hide tooltip on mouse leave event
+   */
+  function subscribeTooltipEvents(){
+    $(document).on("mouseover", 'a[id^="post_comment_link"]', function(event){
+      $('#'+event.target.id+' > span').removeClass("no-disp");
+    });
+
+    $(document).on("mouseleave", 'a[id^="post_comment_link"]', function(event){
+      $('#'+event.target.id+' > span').addClass("no-disp");
+    });
+  };
+
+  function subscribeLikeEvents(){
+    $('.button_like').unbind("ajax:success").bind("ajax:success", function(evt, data, status, xhr){
+      //stop event propagation up the DOM
+      agent = jQuery.browser;
+      if(agent.msie) {
+        evt.cancelBubble = true;
+      } else {
+        evt.stopPropagation();
+      }
+        	
+      var resp = xhr.responseText.slice(1, xhr.responseText.length-1).split(",");
+      var location_id = resp[0];
+      var plus_count = resp[1];
+      var str = null;
+      if(plus_count > 1){
+        str = plus_count + " likes";
+      } else{
+        str = plus_count + " like";
+      }
+      $("#rating_count_" + location_id).html( str );
+      $("#rating_count_" + location_id).css('display', 'block');
+      $("#my_rating_count_" + location_id).html( str );
+      $("#my_rating_count_" + location_id).css('display', 'block');
+    }).unbind("ajax:error").bind("ajax:error", function(evt, xhr, status, error){
+      if(xhr.responseText == "Please Login first.")
+        $("#login_link").trigger('click');
+      else{/*nothing*/}
+    });
+  };
+
+  function subscribeFollowEvents(){
+    $('.button_follow').unbind("ajax:success").bind("ajax:success", function(evt, data, status, xhr){
+      //stop event propagation up the DOM
+      agent = jQuery.browser;
+      if(agent.msie) {
+        evt.cancelBubble = true;
+      } else {
+        evt.stopPropagation();
+      }
+
+      var entityuserId = $(this).attr("entityUserId");
+      var href = $('.button_follow').attr("href");
+      if (data=='[\"unfollow\"]'){
+       $('.follow_'+entityuserId).attr("href", href.replace("follow","unfollow"));
+       $('.follow_'+entityuserId).html("unfollow");
+
+      } else {
+        $('.follow_'+entityuserId).attr("href", href.replace("unfollow","follow"));
+        $('.follow_'+entityuserId).html("follow");
+      }
+    })
+  };
+
+  //show add new comment form after pressing comment link
+  function subscribeCommentEvents(){
+
+    $('a[id^="all_comments_link_"]').unbind("ajax:beforeSend").bind("ajax:beforeSend", function(jqXHR, settings){
+      var entityId = $(this).attr('entityId');
+      $('#ajax_loader_'+entityId).removeClass('no-disp');
+    });
+
+    $('a[id^="all_comments_link_"]').unbind("ajax:success").bind("ajax:success", function(evt, data, status, xhr){
+      agent = jQuery.browser;
+      if(agent.msie) {
+        evt.cancelBubble = true;
+      } else {
+        evt.stopPropagation();
+      }
+      var entityId = $(this).attr('entityId');
+      var page = $(this).attr('page');
+      $('#ajax_loader_'+entityId).addClass('no-disp');
+      if(page == 1){
+        commentStateMap[entityId] = true;
+        $('#comment_stream_'+entityId).empty();
+        $('#comment_stream_'+entityId).append(data);
+        subscribeEvents();
+      }else{
+        $('#comments_button_container_'+entityId).remove();
+        $('#comment_stream_'+entityId).append(data);
+        subscribeCommentEvents();
+      }
+      return false;
+    });
+
+    $('a[id^="collapse_comments_link_"]').unbind("ajax:success").bind("ajax:success", function(evt, data, status, xhr){
+      agent = jQuery.browser;
+      if(agent.msie) {
+        evt.cancelBubble = true;
+      } else {
+        evt.stopPropagation();
+      }
+      var entityId = $(this).attr('entityId');
+      commentStateMap[entityId] = false;
+      $('#comment_stream_'+entityId).empty();
+      $('#comment_stream_'+entityId).append(data);
+      subscribeCommentEvents();
+      return false;
+    });
+
+    $(".button_share").on("click", function(event){
+      var entityid = $(this).attr("entityid");
+      $.ajax({
+        type: "POST",
+        url: '/share_signal_for_statmix'
+      });
+      $("#span_share_this_"+entityid).trigger("click");
+      return false;
+    });
+
+    $('.button_comment').unbind("click").bind("click", function(event){
+      var link = event.target;
+      var entityId = $(this).attr('entityId');
+      $("#comment_body_"+selected_comment_field).validationEngine('hide');
+      if(entityId != null){
+        selectedentityId = entityId;
+        $('.button_comment').removeClass('button_comment_active');
+        var openState = false;
+        if($('#form_wrapper_'+entityId).is(":hidden")){
+          openState = true;
+<%#*$('[id^="comment_body_"]').attr('value','');%>
+          $otherForms = $('[id^="form_wrapper_"][id!="form_wrapper_'+entityId+'"]');
+          if ($otherForms.length>0) {
+            $otherForms.hide(400, function(){
+              $('#form_wrapper_'+entityId).slideDown(400, function(){});
+            });
+          }else{
+            $('#form_wrapper_'+entityId).slideDown(400, function(){});
+          };
+        }else{}
+        $(this).addClass('button_comment_active');
+
+      }
+      return false;
+    });
+  };
+
+  /**
+   * Need to change available symbol count of entity and comment body
+   */
+  function subscribeCommentBodyEvents(){
+    $('textarea#[id^="comment_body_"]').attr("maxlength", COMMENT_MAX_LENGTH);
+
+    //change available character counts for entity message
+    $(document).on("keyup click blur focus change paste", 'textarea#[id^="comment_body_"]' , function(){
+      var length = COMMENT_MAX_LENGTH - $(this).val().trim().length;
+      $('.commentreply_wordcount').html(length);
+      if(length == 0){
+        $(this).val($(this).val().slice(0, COMMENT_MAX_LENGTH));
+      }
+    });
+  };
+
+  /**
+   * Subscribe events for anonymous switcher
+   * when user click on anonymous switcher system verify user logged status
+   * and if user is not logged in system show him login popup form
+   * after sending ajax requests to server anonymous icon switched to another state
+   */
+  function subscribeAnonymousSwitchEvents(){
+
+    var SELECTOR_ANONYMOUS = 'a[id^="post_comment_link_anonymous"]';
+
+    $(document).on("click", SELECTOR_ANONYMOUS , function(){
+      var entityid="anonymous_post"
+      if (<%=current_user.blank?%>){
+        entityid=$(this).attr("entityid")+"";
+        if (entityid=="undefined"){entityid="anonymous_post";send_entity("yes");}}
+      return checkForAuthorizedUsers(entityid, "yes");
+    });
+
+    $(SELECTOR_ANONYMOUS).unbind("ajax:success").bind("ajax:success", function(evt, data, xhr, settings){
+      agent = jQuery.browser;
+      evt.stopPropagation();
+      var anonymous = data;
+
+      $(SELECTOR_ANONYMOUS).removeClass("anonym");
+      $(SELECTOR_ANONYMOUS).removeClass("anonym_active");
+      $(SELECTOR_ANONYMOUS).addClass(anonymous === "true" ? "anonym_active": "anonym");
+    });
+  };
+
+  function subscribeCommentSubmittingEvents(){
+    var entityId, entityText;
+    $('.commentreply_button').unbind("click").bind("click", function(){
+      entityId=$(this).attr("entityId");
+      entityText = $("div#entity_block_"+entityId+" .entity_body .entitytext").text();
+      $('#entity_comment_form_'+entityId+'>input[name="comment_state"]').attr('value', commentStateMap[entityId]);
+      if($('#comment_body_'+entityId).val() == ""){
+        alert("Comment can't be blank.");
+        return false;
+      }else{
+        var authorizedUserCheck = checkForAuthorizedUsers(entityId, "no");
+        var isbreakingentity = $(this).attr("breakingentity");
+        if (authorizedUserCheck==true && isbreakingentity=="true"){
+          $("#comment_stream_breakingentitys_"+entityId).addClass("comment_stream_background");
+        }
+        return authorizedUserCheck;
+      }
+    });
+
+    $('.commentreply > form').unbind("ajax:success").bind("ajax:success", function(evt, data, status, xhr){
+      //stop event propagation up the DOM
+      agent = jQuery.browser;
+      if(agent.msie) {
+        evt.cancelBubble = true;
+      } else {
+        evt.stopPropagation();
+      }
+      if (data!="Your entity contains spam content. Please rewrite it in another way."){
+      var target = $(this).data('update-target');
+      $('#' + target).html(data);
+      $parent = $(this).parent();
+
+      
+      <%#*$('#post_entity_link_photo_'+entityId).removeClass('addphoto_full').addClass('addphoto');%>
+      $parent.hide(400);
+      $('.button_comment').removeClass('button_comment_active');
+      $("#comment_body_"+entityId).val('');
+      } else {
+        $("#comment_body_"+entityId).validationEngine('showPrompt', "Your entity contains spam content. Please rewrite it in another way.", 'error', 'topRight:-200,0', true);
+        selected_comment_field = entityId;
+      }
+      
+      subscribeCommentEvents();
+      twitter_share_checkbox = $(this).find("input[name='commentreply_twitter']");
+      facebook_share_checkbox = $(this).find("input[name='commentreply_facebook']");
+      if (twitter_share_checkbox.is(":checked")){
+        twitter_share_checkbox.attr("checked", false);
+        twitter_share_checkbox.parent().toggleClass('commentreply_tw commentreply_tw_active');
+        twitter_share($("#share_url_holder_"+entityId).attr("url"));
+      };
+      if (facebook_share_checkbox.is(":checked")){
+        facebook_share_checkbox.attr("checked", false);
+        facebook_share_checkbox.parent().toggleClass('commentreply_fb commentreply_fb_active');
+        facebook_share($("#share_url_holder_"+entityId).attr("url"), entityText, '<%= asset_path('external_nopic.png') %>');
+      };
+    });
+
+  };
+
+  /**
+   * Subscribe all jquery events for deleteing entity functionality
+   * if user rolls over entity posted by him then delete button appears at right bottom part of entity
+   * when user click on "delete button" fancy box with delete confirmation appears
+   */
+  function subscribeentityDeleteEvents(){
+    $('.entity').unbind("mouseover").bind("mouseover", function(){
+      var entityId = $(this).attr('entityId');
+      $("#share_button_"+entityId).addClass("no-disp");
+      $('#delete_entity_'+entityId).fadeIn(200);
+      $("#share_button_"+entityId).removeClass("no-disp");
+      //$('#delete_my_entity_'+entityId).fadeIn(200);
+    });
+
+    $('.entity').unbind("mouseleave").bind("mouseleave", function(){
+      var entityId = $(this).attr('entityId');
+      $('#delete_entity_'+entityId).fadeOut(200);
+      //$('#delete_my_entity_'+entityId).fadeOut(200);
+    });
+
+    $('a[id^="delete_entity_"]').fancybox({
+      'autoScale'			: false,
+      'width'                       : 380,
+      'height'                      : 160,
+      'transitionIn'		: 'fade',
+      'transitionOut'		: 'fade',
+      'opacity'                     :true,
+      'titleShow'                   :false
+    });
+
+    $('div[id^="delete_entity_popup_"] > form').unbind("ajax:success").bind("ajax:success", function(evt, data, status, xhr){
+      //stop event propagation up the DOM
+      agent = jQuery.browser;
+      if(agent.msie) {
+        evt.cancelBubble = true;
+      } else {
+        evt.stopPropagation();
+      }
+      var resp = xhr.responseText.slice(1, xhr.responseText.length-1).split(",");
+      var entityId = resp[0];
+      var archived = resp[1];
+      if(archived){
+        $('#entity_block_'+entityId).hide(400);
+        $('#my_entity_block_'+entityId).hide(400);
+      }
+    });
+  };
+
+  //subscribe events to DOM elements
+  function subscribeEvents(){
+    subscribeFollowEvents();
+    subscribeLikeEvents();
+    subscribeCommentEvents();
+    subscribeTooltipEvents();
+    subscribeCommentBodyEvents();
+    subscribeAnonymousSwitchEvents();
+    subscribeCommentSubmittingEvents();
+    subscribeentityDeleteEvents();
+    $("#unsubscribe").fancybox({
+      'autoScale'			: false,
+      'width'                       : 380,
+      'height'                      : 110,
+      'transitionIn'		: 'fade',
+      'transitionOut'		: 'fade',
+      'opacity'                     :true,
+      'titleShow'                   :false
+    });
+    $("#unsubscribe").trigger("click");
+
+  };
+    
+
+</script>

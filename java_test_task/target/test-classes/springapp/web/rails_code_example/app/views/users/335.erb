@@ -1,0 +1,22 @@
+<body class="create-account">
+  <div id="container">
+    <header>
+     <section class="clearfix">
+      <figure>
+       <p><%= image_tag 'mobile/entitys-logo.png', width: "82", height: "28", alt: "entitys Logo" %></p>
+      </figure>
+      <h1>Create Account</h1>
+      <%= render :partial => "entitys/logout_header_mobile" %>
+     </section> 
+     <%= render :partial => "entitys/header_mobile", :locals => {:page => ''} %>
+    </header>
+    <div id="main" role="main">
+     <div id="thank_you_popup" class="text_gray">
+      <div class="header">
+        <h1>Thank you</h1>
+        <p>An email with next steps will be sent to you shortly.</p>
+      </div>
+     </div>
+    </div>
+  </div><!--! end of #container -->
+</body>

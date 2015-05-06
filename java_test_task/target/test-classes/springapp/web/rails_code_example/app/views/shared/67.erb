@@ -1,0 +1,18 @@
+<center>
+  <div class="fl-c">
+ <% if current_user.avatar.present? %>
+  <%= image_tag(current_user.avatar.url+'?'+[*('a'..'z')].sample(25).join, alt: "Avatar", title: "Avatar", id: 'userpic_full') %>
+  <% else %>
+  Error loading image!
+  <% end %>
+  </div>
+</center>
+<div class="mrg-t">
+<%=form_for current_user, :url=>user_save_settings_path(current_user.id), :remote=>true, :method=>:put, :html=>{:id=>"crop_userpic"} do |f|%>  
+  <% for attribute in [:crop_x, :crop_y, :crop_w, :crop_h] %>
+    <%= f.hidden_field attribute, :id => attribute %>
+  <% end %>
+  <p><%= f.submit "Save", class: "btn_redbig fl-r", size: "30" %></p>
+<%end%>
+</div> 
+

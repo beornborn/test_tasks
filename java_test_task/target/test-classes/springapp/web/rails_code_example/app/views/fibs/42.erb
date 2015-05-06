@@ -1,0 +1,14 @@
+<div class="comment_stream">
+    <%my_entity.replies.order(:id).each_with_index do |reply, index|%>
+        <%if index == 0 || index == my_entity.replies.size - 2 || index == my_entity.replies.size - 1%>
+            <% setNotificationRead reply %>
+            <%= render :partial => "entitys/my_comment", :locals => {:reply => reply, :index => index, :size => my_entity.replies.size, :state=>"collapsed"} %>
+            <%if index == 0 && my_entity.replies.size > 3%>
+                <%=link_to getViewAllCommentsLinkTitle(my_entity, 1), load_comments_entity_path(:id=>my_entity.id, :page=>1, :type=>"my_entitys"),
+                           :entityId=>my_entity.id, :id=>"all_my_comments_link_"+my_entity.id.to_s(10), :page=>1,
+                           :method=>:post, :remote=>true, :"data-type" => "html", :class=>"comments_viewall_button btn_sml"%>
+                <div class="clr"></div>
+            <%end%>
+        <%end%>
+    <%end%>
+</div>

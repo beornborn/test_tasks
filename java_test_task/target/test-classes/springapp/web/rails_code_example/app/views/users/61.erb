@@ -1,0 +1,35 @@
+<%=form_for :entity, :url=>search_entitys_path, :html=>{:method=>:get, :id=>"search_form_"} do |f|%>
+  <table class="searchbox" cellpadding="0" cellspacing="0" style="width: 100%; border:thick aqua;">
+    <tr>
+      <td style="height: 35px; width: 28px"></td>
+      <td style="height: 35px"></td>
+      <td style="height: 35px"></td>
+      <td style="height: 35px; width: 390px"></td>
+      <td style="height: 35px"></td>
+    </tr>
+    <tr>
+      <td style="width: 28px; height: 40px;"></td>
+      <td colspan="3" style="height: 40px; color:white;font-size:large"><h2>Search entitys</h2></td>
+      <td style="height: 40px"></td>
+    </tr>
+    <tr>
+      <td style="width: 28px; height: 54px;"></td>
+      <td colspan="3" style="height: 54px; width:440px">
+        <div style="background-color:white; height: 79px; width:430px;" id="makethemround">
+          <ul style="float:left; height: 52px; width:430px;margin:0;padding:0">
+            <li style="height: 65px">
+              <input type="text" name="q" style="border-style: none; border-color: inherit; border-width: 0px; margin: 4px 0 0 15px; height: 57px;font-size:x-large; color:gray; width: 366px;" />
+              <input type="submit" value="" class="submit_button_image" />
+            </li>
+          </ul>
+        </div>
+      </td>
+      <td style="height: 54px; width:24px"></td>
+    </tr>
+  </table>
+<%end%>
+<script>
+  $(document).ready(function(){
+    $('#search_image').bind("click", function(){$('#search_form_').submit();})
+  });
+</script>

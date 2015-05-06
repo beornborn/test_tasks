@@ -1,0 +1,26 @@
+<%if index == 0 && state=="expanded"%>
+    <div class="comment comment_first">
+        <p class="comment_text" com_id="<%= reply.id %>">
+            <span class="comment_username"><%=getUserName(reply)%></span>
+            <%=truncate_words(reply.body, 30, "...", reply.id).html_safe %>
+        </p>
+
+        <% if reply.photo.present? %>
+          <div class="photo_body">
+            <%= image_tag(reply.photo.url, alt: "Photo") %>
+            </div>
+          <% end %>
+    </div>
+<%else%>
+    <div class="comment comment_min">
+      <p class="comment_text" com_id="<%= reply.id %>">
+            <span class="comment_username"><%=getUserName(reply)%></span>
+            <%=truncate_words(reply.body, 30, "...", reply.id).html_safe %>
+      </p>
+       <% if reply.photo.present? %>
+          <div class="photo_body">
+            <%= image_tag(reply.photo.url, alt: "Photo") %>
+            </div>
+          <% end %>
+    </div>
+<%end%>

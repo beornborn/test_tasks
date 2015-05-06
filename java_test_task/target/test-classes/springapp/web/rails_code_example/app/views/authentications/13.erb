@@ -1,0 +1,67 @@
+<%=form_for :user, :url => "/authentications", html: {id: 'new_acc'} do |f|%>
+
+<div id="quick_connect" style="">
+
+<% unless @user.errors.blank? %>
+  <div id="quick_connect_errors">
+
+    <% @user.errors.full_messages.each do |msg| %>
+        <li><%= msg %></li>
+    <% end %>
+  </div>
+<% end %>
+
+ <div id="quick_connect_message">
+      To save you time, the registration form below has been prefilled using your <%= @user.provider.titleize %> profile.
+  </div>
+
+     <div id="quick_connect_wrap">
+      <table>
+        <tbody>
+
+        <tr>
+          <td rowspan="4"><%=image_tag session[:omniauth].info.image%></td>
+        </tr>
+
+        <tr>
+          <td class="row">Name</td>
+          <td class="row"><%=text_field :user, :name, :readonly =>true, :class=>"twitter_readonly form"%></td>
+        </tr>
+
+        <tr>
+          <td class="row">Email Address</td>
+          <td class="row"><%=text_field :user, :email, :class=>"form"%></td>
+        </tr>
+
+        <tr>
+          <td class="row"> Username</td>
+          <td class="row"><%=text_field :user, :user_name, :class=>"form"%></td>
+        </tr>
+
+        <tr>
+          <td class="row" colspan="3" id="check_field_avatar"><%=check_box_tag 'use_social_connect_picture' %>
+           &nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Use my picture from <%= @user.provider.titleize %> as my profile picture</td>
+        </tr>
+
+        <tr>
+          <td class="row"></td>
+          <td class="row"><%=hidden_field_tag :remote_avatar_url, "#{@user.omniauth_url_avatar}" %></td>
+        </tr>
+        
+        <tr>
+          <td colspan="3" class="row a-center">
+            <%=submit_tag "Register", :class=>"redfld_btn"%>
+          </td>
+        </tr>
+
+      </tbody>
+    </table>
+    </div>
+    <div>
+
+    </div>
+  </div>
+<%end%>
+<% if is_mobile_device? %>
+<%= stylesheet_link_tag "mobile/mobile" %>
+<% end %>

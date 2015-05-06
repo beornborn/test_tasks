@@ -1,0 +1,56 @@
+<body class="home">
+  <div id="container">
+    <header>
+     <section class="clearfix">
+      <figure>
+       <p><%= image_tag 'mobile/entitys-logo.png', width: "82", height: "28", alt: "entitys Logo" %></p>
+      </figure>
+      <h1><%= image_tag("mobile/word_mobile.png")  %></h1>
+      <%= render :partial => "entitys/logout_header_mobile" %>
+     </section>
+      <%= render :partial => "entitys/header_mobile", :locals => {:page => ""} %>
+    </header>
+
+    <div id="error_wrap">
+      <div id="error_small_wrap">
+        <div class="white_font first_div">Sorry, that page doesn’t exist.
+        </div>
+        <div class="yellow_font second_div">
+          Try doing a search or return to the homepage.
+        </div>
+        <div id="topbar_search" style="width:100%;">
+          <div class="third_div">
+          <%=form_for "search", :url=>search_entitys_path, :html=>{:id=>"top_search_form", :method=>:get, :onsubmit=>"return checkscript($('#q'))"} do |f|%>
+          <%=search_field_tag "q", nil, value: "Search", :id=>"search_field_tag_top" %>
+          <%=submit_tag "", :class=>"search_button"%>
+          <%end%>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div><!--! end of #container -->
+
+</body>
+
+<script type="text/javascript">
+  function checkscript(f) {
+    var search = f.attr("value");
+    if (search.indexOf("#")==0) {
+          search = search.replace(/#/, "");
+    }
+    search=$.trim(search);
+    if (search==""){return false;}
+    f.attr("value", search);
+    return true;
+    };
+
+ $("#search_field_tag_top").click(function(){
+    if( $("#search_field_tag_top").attr("value") == "Search"){
+      $("#search_field_tag_top").attr("value", "");
+    }
+  }).mousedown(function(){
+    if( $("#search_field_tag_top").attr("value") == "Search"){
+      $("#search_field_tag_top").attr("value", "");
+    }
+  });
+</script>

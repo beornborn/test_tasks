@@ -1,0 +1,60 @@
+<style type="text/css">
+  html { position: relative; } /* Фикс для оперы */
+  html {overflow:auto !important;}
+  body {background: #F5F5F5;}
+</style>
+
+<div id="forgot_password_popup" class="popup">
+  <div id="quick_connect_errors_forgot" style="display: none"></div>
+  <div id="response_area"></div>
+  
+  <%= form_for(resource, :as => resource_name, :url => password_path(resource_name), :remote=>true, :html => {:id=>"reset_password_form", :method => :post }) do |f| %>
+    <div class="header">
+      <h1>Forgot password?</h1>
+      <p>Type your email address below and reset your password.</p>
+    </div>  
+  
+    <%= devise_error_messages! %>
+    <%=f.text_field "email", {size: "30", class: "form", placeholder: "Email"} %>
+
+    <div class="fl-r">
+      <%=submit_tag "Submit", class: "btn_red", size: "1"%>
+    </div>
+    <div class="clr"></div>
+  <% end %>
+</div>
+<script>
+  $(document).ready(function(){
+    window.parent.$("#fancybox-wrap").width(400).height(220);
+    window.parent.$("#fancybox-content").width(380).height(200);
+    window.parent.$.fancybox.resize();
+    window.parent.$.fancybox.center();
+    
+    $("#user_email").click(function() {
+         $(this).validationEngine('hide');
+    });
+    
+    $('#reset_password_form')
+    .bind("ajax:success", function(evt, data, status, xhr){
+      $("#user_email").validationEngine('hide');
+      $('#reset_password_form').fadeOut();
+      $('#response_area').html("E-mail with instructions has been sent.");
+    })
+    .bind("ajax:error", function(evt, xhr, status, error){
+      $('#quick_connect_errors_forgot').html(xhr.responseText);
+    })
+    .bind("ajax:beforeSend", function(evt, xhr, status, error){
+      if (!validateEmail($('#user_email').val())){
+        $('#user_email').validationEngine('showPrompt', 'Failed format', 'error', 'bottomLeft', true);
+        return false;
+      }
+    });
+  })
+  
+  function validateEmail(email) 
+  {
+    var re = /([^@\s]+)@((?:[-a-z0-9]+\.)+[a-z]{2,})/;
+    return re.test(email);
+  }
+</script>
+<%#= render :partial => "devise/shared/links" %>

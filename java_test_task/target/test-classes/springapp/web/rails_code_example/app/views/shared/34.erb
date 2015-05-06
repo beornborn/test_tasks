@@ -1,0 +1,309 @@
+<div id="topbar">
+
+  <div id="topbar_logo">
+    <%=link_to image_tag("logo.png"), root_path, :class => "logo"%>
+  </div>
+
+  <div id="topbar_search">
+    <%=form_for "search", :url=>search_entitys_path, :html=>{:id=>"top_search_form", :method=>:get, :onsubmit=>"return checkscript($('#search_field_id'))"} do |f|%>
+      <%=hidden_field_tag "utf8", "✓"%>
+      <%=text_field_tag "q", "Search", :class=>"search_field", :id=>"search_field_id", :onclick => "clearSearchField(this)", :onblur => "clearSearchField(this)" %>
+      <%=submit_tag "", :class=>"search_button"%>
+      <div class="clr"></div>
+    <%end%>
+  </div>
+
+  <div class="fb-like" data-href="https://www.facebook.com/entitys" data-send="false" data-layout="button_count" data-width="1" data-show-faces="false"></div>
+  <div id="topbar_menu">
+    <ul>     
+      <% unless current_user %>
+        <li><%=link_to "Login", new_user_session_path, {:id=>"login_link", :title=>"Login"}%></li>
+        <li><%=link_to "Create Account", new_user_registration_path, {:id=>"create_account_link", :title=>"Sign Up"}%></li>
+        <li>Quick Connect:</li>
+        <li><%=link_to "Facebook Connect", "/auth/facebook", {:id=>"fb_connect", :class=>"social facebook"}%></li>
+        <li><%=link_to "Twitter Connect", "/auth/twitter", {:id=>"twitter_connect", :class=>"social twitter"}%></li>
+      <% else %>
+        <li>Welcome&nbsp;</li>
+        <li><%=link_to getTruncatedUserName(current_user), users_home_path, :id=>"profile_link" %></li>
+        <li><%=link_to "Settings", "/settings", {:id=>"settings_link"} %></li>
+        <% if @firstTime %>
+          <script type="text/javascript">
+            $('#settings_link').validationEngine('showPrompt', "Upload a picture now by clicking Settings", 'load', 'bottomLeft:-60,-13', true);
+            $('.formErrorContent').first().css('font-weight', '700').css('font-size', '+1').css('color', '#444444');
+          </script>
+        <%- end -%>
+        <li><%=link_to "Sign Out", destroy_user_session_path, {:method=>"DELETE", :id=>"sign_out"} %></li>
+      <%- end -%>
+    </ul>
+    <div class="clr"></div>    
+  </div>
+  <% if current_user %>
+    <div id="topbar_notify">
+      <div id="notify_loader" class="no-disp">
+        <%=image_tag("ajax_loader_small.gif")%>
+      </div>
+      <div id="notify_ico" class="notify_ico">
+        <span id="replies_count"></span>
+      </div>
+      <div id="notify">
+      </div>
+      <div class="clr"></div>
+    </div>
+  <%- end -%>
+
+  <div class="clr"></div>
+
+</div>
+
+
+<script>
+
+  function get_notify_count(){
+    $('#notify_loader').removeClass('no-disp');
+    $('#notify_ico').addClass('hidden');
+    $.ajax({
+      url: "/notifications_count",
+      type: "POST",
+      success: function(data) {
+        $('#notify_loader').addClass('no-disp');
+        $('#notify_ico').removeClass('hidden');
+        $('#replies_count').empty().append(data);
+      },
+      error: function(){
+        $('#notify_loader').addClass('no-disp');
+        $('#notify_ico').removeClass('hidden');
+      }
+    });
+  }
+
+  $(document).ready(function() {
+<% if current_user %>
+      get_notify_count();
+<% end %>
+  
+    if ($("#notify").css("display", "block")){
+      window.count_notify = 0;
+      window.count_body = 0;
+      $("#notify").click(function(){
+        window.count_notify++;
+      });
+      $("body").click(function(){
+        close_notify();
+      });
+    }
+
+    $(".close").live("click", function(){
+      var id=$(this).parent().attr("entityId")
+      $(this).parent().slideUp('fast').removeClass('notify_only_for_count');
+      $('#notify_loader').removeClass('no-disp');
+      $('#notify_ico').addClass('hidden');
+      $.ajax({
+        url: "/remove_notification",
+        type: "POST",
+        data: {id: id},
+        success: function(data) {
+          $('#notify_loader').addClass('no-disp');
+          $('#notify_ico').removeClass('hidden');
+          $('#replies_count').empty().append(data);
+        },
+        error: function(){
+          $('#notify_loader').addClass('no-disp');
+          $('#notify_ico').removeClass('hidden');
+        }
+      });
+      if ($(".notify_only_for_count").length==0) {
+        $("#notify").slideUp('fast');  
+      }
+    });
+
+    $("#clear_all_notifications").live('click',function(){
+      $('#notify').slideToggle('medium').empty();
+      $('#notify_loader').removeClass('no-disp');
+      $('#notify_ico').addClass('hidden');
+      $.ajax({
+        url: "/remove_all_notifications",
+        type: "POST",
+        success: function(data) {
+          $('#notify_loader').addClass('no-disp');
+          $('#notify_ico').removeClass('hidden');
+          $('#replies_count').empty().append(data);
+        },
+        error: function(){
+          $('#notify_loader').addClass('no-disp');
+          $('#notify_ico').removeClass('hidden');
+        }
+      });
+    });
+
+    $("#notify_ico").click(function(event){
+      event.stopPropagation();
+      if (!$('#notify_head').is(':visible')){
+        $('#notify_loader').removeClass('no-disp');
+        $('#notify_ico').addClass('hidden');
+        $.ajax({
+          url: "/notifications_list",
+          type: "POST",
+          success: function(data) {
+            if(data.length > 0) {
+              $('#notify').empty().append(data).slideDown('medium');
+            }          
+            $('#notify_loader').addClass('no-disp');
+            $('#notify_ico').removeClass('hidden');
+            get_notify_count();
+          },
+          error: function() {
+            $('#notify_loader').addClass('no-disp');
+            $('#notify_ico').removeClass('hidden');
+            get_notify_count();
+          }                 
+        });
+      }else{
+        close_notify();
+      }  
+    });
+
+    $('[id^="notification_"]').hover(function(){
+      var notId = $(this).attr('notId');
+      $("#notification_link_"+notId).css("color", "#AD3131");
+    });
+    $('[id^="notification_"]').mouseleave(function(){
+      var notId = $(this).attr('notId');
+      $("#notification_link_"+notId).css("color", "#ED6764");
+    });
+
+    $(".settings_linkformError").click(function() {
+      $("#settings_link").validationEngine('hide');
+    });
+  
+    <% if !browser.ie8? and !browser.ie7? %>
+    $("#login_link").fancybox({
+      'autoDimensions': false,
+      'autoScale'			: false,
+      'scrolling'   : 'no',
+      'width':380,
+      'height':280,
+      "opacity":true,
+      'transitionIn'		: 'fade',
+      'transitionOut'		: 'fade',
+      'type'				: 'iframe',
+      'titleShow':false
+    });
+    <% end %>
+
+    <% if !browser.ie8? and !browser.ie7? %>
+    $("#create_account_link").fancybox({
+      'autoDimensions': false,
+      'autoScale'			: false,
+      'scrolling'   : 'no',
+      'width':380,
+      'height':460,
+      'transitionIn'		: 'fade',
+      'transitionOut'		: 'fade',
+      'type'				: 'iframe',
+      "opacity":true,
+      'titleShow':false
+    });
+    <% end %>
+    $("#twitter_connect").click(function(){$(this).toggleClass('twitter twitter_active');})
+    $("#fb_connect").click(function(){$(this).toggleClass('facebook facebook_active');})  
+    /*
+  $("#twitter_connect, #fb_connect").click(function(){$.fancybox.showActivity();})
+  $("#twitter_connect, #fb_connect").fancybox({
+  'autoScale'			: true,
+  'width'             : 620,
+  'height'            : 430,
+  'transitionIn'		: 'fade',
+  'transitionOut'		: 'fade',
+  'type'				: 'iframe',
+  'opacity':true,
+  'titleShow':true,
+  'scrolling': 'no',
+  'onComplete' : function() {
+  $.fancybox.hideActivity();
+  }
+
+  });
+
+  $('.connect_widget_not_connected_text').css('color', "white");*/
+    <% if !browser.ie8? and !browser.ie7? %>
+    $("#settings_link").fancybox({
+      'autoDimensions': false,
+      'autoScale'			: false,
+      'scrolling'   : 'auto',
+      'width':380,
+      'height':470,
+      'transitionIn'		: 'fade',
+      'transitionOut'		: 'fade',
+      'type'				: 'iframe',
+      "opacity":true,
+      'titleShow':false
+      ,
+      'onCleanup': function() {
+      window.parent.location.reload();
+      }
+    });
+    <% end %>
+    
+    $("#fb_likebutton").removeClass('no-disp');
+
+
+  });
+
+
+  function clearSearchField(f){
+    if(f.value == "Search"){
+      f.value = ""
+    }
+  };
+
+  function checkscript(f) {
+    var search = f.attr("value");
+    if (search.indexOf("#")==0) {
+      search = search.replace(/#/, "");
+    }
+    search=$.trim(search);
+    if (search==""){return false;}
+    if (search=="Search"){search="";}
+    f.attr("value", search);
+    return true;
+  };
+  
+  function close_notify() {
+    window.count_body++;
+    if ( window.count_body > window.count_notify ){
+      $("#notify").slideUp("fast")
+      window.count_notify = 0;
+      window.count_body = 0;
+    }
+  };
+</script>
+
+<%unless params[:reset_password_token].blank?%>
+  <%=link_to "Reset", edit_password_url("user", :reset_password_token => params[:reset_password_token]), :class=>"hide", :id=>"reset_password_link"%>
+  <script>
+    $(document).ready(function(){
+      $('#reset_password_link').fancybox({
+        'autoScale'			: true,
+        'transitionIn'		: 'none',
+        'transitionOut'		: 'none',
+        'type'				: 'iframe',
+        "opacity":true,
+        'titleShow':false,
+        'onComplete' : function() {
+          $('#fancybox-frame').load(function() {
+            $('#fancybox-content').height($(this).contents().find('body').height()+30);});
+        }
+      });
+      $("#reset_password_link").trigger('click');
+    });
+  </script>
+<%end%>
+
+<div id="fb-root"></div>
+<script>(function(d, s, id) {
+  var js, fjs = d.getElementsByTagName(s)[0];
+  if (d.getElementById(id)) return;
+  js = d.createElement(s); js.id = id;
+  js.src = "//connect.facebook.net/en_US/all.js#xfbml=1&appId=240308452679111";
+  fjs.parentNode.insertBefore(js, fjs);
+}(document, 'script', 'facebook-jssdk'));</script>

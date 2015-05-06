@@ -1,0 +1,176 @@
+﻿<!doctype html>
+<!--[if lt IE 7 ]> <html lang="en" class="no-js ie6"> <![endif]-->
+<!--[if IE 7 ]>    <html lang="en" class="no-js ie7"> <![endif]-->
+<!--[if IE 8 ]>    <html lang="en" class="no-js ie8"> <![endif]-->
+<!--[if IE 9 ]>    <html lang="en" class="no-js ie9"> <![endif]-->
+<!--[if (gt IE 9)|!(IE)]><!--> <html lang="en" class="no-js"> <!--<![endif]-->
+  <html>
+    <head>
+      <meta charset="utf-8">
+      <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+      <meta name="description" content="">
+      <meta name="author" content="">
+      <meta name="viewport" content="width=device-width, initial-scale=1.0">
+      <meta name="google-site-verification" content="79ovmNOPynPA2riqTDXl2ULWP4OPnEzB9ndpCTgvc8c" />
+      <link rel='shortcut icon' href='/favicon.png' type='image/x-icon'/>
+
+      <title>entitys | When the Truth Hurts</title>
+
+      <%= javascript_include_tag  "application" %>
+      <%= stylesheet_link_tag "application" %>
+      
+      <%= csrf_meta_tag %>
+ 
+      <script type="text/javascript">var switchTo5x=true;</script>
+      <script type="text/javascript" src="http://w.sharethis.com/button/buttons.js"></script>
+      <script type="text/javascript">
+        stLight.options({
+          publisher:'887772e4-0a7f-441e-9c76-cfba2c15a4e4',
+          shorten:false,
+          onhover: false,
+          doneScreen: false,
+          embeds: true,
+          headerTitle: "share entitys with pleasure!",
+          <%#*minorServices: false,%>
+          excludeServices:'yahoo, linkedin'
+        });</script>
+      <script type="text/javascript">
+        var _gaq = _gaq || [];
+        _gaq.push(['_setAccount', 'UA-27494359-1']);
+        _gaq.push(['_trackPageview']);
+
+        (function() {
+          var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+          ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+          var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+        })();
+
+      </script>
+    </head>
+    <body>
+      <div class="adv_fullscr_bgimage adv_background_image">
+        <%=link_to "adv link", "", :id=>"adv_link", :class=>"no-disp" %>
+      </div>
+      <div id="topbar_wrap">
+        <%=render :partial=>"shared/header"%>
+      </div>
+
+      <div id="content_wrap">
+        <%- if cookies['firstTimeInentitysWithoutLogin']==nil -%>
+          <%=render :partial=>"shared/description"%>
+          <% cookies['firstTimeInentitysWithoutLogin']={
+            :value => 'no'
+            #,
+            #:expires => 1.year.from_now 
+          }%>
+        <%- end -%>
+
+        <div id="topbar_empty"></div>
+        <%= yield %>
+      </div>
+
+      <!--java script start-->
+      <script type="text/javascript" src="http://script.footprintlive.com/?site=www.entitys.com"></script>
+      <script type="text/javascript">
+        var sponsor_backgrounds = [];
+        var sponsor_url = "";
+          $(document).ready(function(){
+          $(".adv_background_image").click(function(){
+            var url = $("#adv_link").attr("href");
+          if (url!=""){
+          $.ajax({
+            type: "POST",
+            url: '/adv_signal_for_statmix'
+          });
+            window.open(url, "Wnd");
+          }
+          });
+          change_background_if_resize();
+          
+          if (sponsor_backgrounds.length > 0) {
+            $(".adv_background_image").css('backgroundImage', 'url('+ sponsor_backgrounds[0] +')');
+            $("#adv_link").attr("href", sponsor_url);
+          }
+
+          var background_change_counter = 1;
+          if (sponsor_backgrounds.length > 1) {
+            <% if @sponsor_backgrounds.present? %>
+              setInterval(function(){
+                  var temp = background_change_counter
+                  $(".adv_background_image").css('backgroundImage', 'url('+ sponsor_backgrounds[temp] +')');
+                  $("#adv_link").attr("href", sponsor_url);
+                  background_change_counter += 1;
+                  if (background_change_counter >= sponsor_backgrounds.length) {background_change_counter = 0};
+              }, 20000);
+            <% end %>
+          }  
+          
+          $(window).scroll(function () {
+            $("#description_splash").fadeOut('fast');
+          });
+
+          $("#description_splash").click(function() {
+            $("#description_splash").fadeOut('fast');
+          });        
+          
+          <%#*setTimeout(function(){%>
+            <%#*$("#description_splash").fadeOut('fast');%>
+          <%#*}, 15000 );%>
+          
+          window.onresize = function(event) {
+            change_background_if_resize();
+            if (sponsor_backgrounds.length > 0) {
+              $(".adv_background_image").css('backgroundImage', 'url('+ sponsor_backgrounds[0] +')');
+              $("#adv_link").attr("href", sponsor_url);
+            }
+          };
+        });
+        
+  function change_background_if_resize() {      
+    var resolution_of_browser_width = $(window).width();
+    var resolution_of_browser_height = $(window).height();
+    <% if @sponsor_backgrounds.present? %> 
+      <% @sponsor_backgrounds.each_with_index do |background, index| %>
+        if (resolution_of_browser_width <= 1024){ 
+          sponsor_backgrounds[<%= index %>] = '<%= background.resolution1024x768.present? ? background.resolution1024x768 : "" %>'
+        }
+        if (resolution_of_browser_width >= 1025 && resolution_of_browser_width <= 1152){
+          sponsor_backgrounds[<%= index %>] = '<%= background.resolution1152x864.present? ? background.resolution1152x864 : "" %>'
+        }
+        if (resolution_of_browser_width >= 1153 && resolution_of_browser_width <= 1280 && resolution_of_browser_height <= 800){ 
+          sponsor_backgrounds[<%= index %>] = '<%= background.resolution1280x800.present? ? background.resolution1280x800 : "" %>'
+                }
+        if (resolution_of_browser_width >= 1153 && resolution_of_browser_width <= 1280 && resolution_of_browser_height >= 801){ 
+          sponsor_backgrounds[<%= index %>] = '<%= background.resolution1280x1024.present? ? background.resolution1280x1024 : "" %>'
+        }
+        if (resolution_of_browser_width >= 1281 && resolution_of_browser_width <= 1366){ 
+          sponsor_backgrounds[<%= index %>] = '<%= background.resolution1366x768.present? ? background.resolution1366x768 : "" %>'
+        }
+        if (resolution_of_browser_width >= 1367 && resolution_of_browser_width <= 1440){ 
+          sponsor_backgrounds[<%= index %>] = '<%= background.resolution1440x900.present? ? background.resolution1440x900 : "" %>'
+        }
+        if (resolution_of_browser_width >= 1441 && resolution_of_browser_width <= 1600){
+          sponsor_backgrounds[<%= index %>] = '<%= background.resolution1600x900.present? ? background.resolution1600x900 : "" %>'
+        }
+        if (resolution_of_browser_width >= 1601 && resolution_of_browser_width <= 1920){ 
+          sponsor_backgrounds[<%= index %>] = '<%= background.resolution1920x1080.present? ? background.resolution1920x1080 : "" %>'
+        }
+        if (resolution_of_browser_width >= 1921 && resolution_of_browser_height <= 1440){
+          sponsor_backgrounds[<%= index %>] = '<%= background.resolution2560x1440.present? ? background.resolution2560x1440 : "" %>'
+        }
+        if (resolution_of_browser_width >= 1921 && resolution_of_browser_height >= 1441){
+          sponsor_backgrounds[<%= index %>] = '<%= background.resolution2560x1920.present? ? background.resolution2560x1920 : "" %>'
+        }
+        sponsor_url = '<%= background.url.present? ? background.url : "" %>'
+      <% end %>
+    <% end %>    
+  };
+      </script>
+      <noscript>
+        <a href="http://www.footprintlive.com" target="_blank">
+          <img src="http://img.footprintlive.com/?cmd=nojs&amp;site=www.entitys.com" alt="free tracking" border="0" />
+        </a>
+      </noscript>
+      <img src="" id="test_image" width="1" height="1" class="no-disp"></img>
+    </body>
+  </html>

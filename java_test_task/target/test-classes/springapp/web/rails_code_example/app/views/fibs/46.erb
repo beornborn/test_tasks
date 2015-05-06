@@ -1,0 +1,145 @@
+<div id="tabs">
+    <ul>
+        <li><a href="#tabs-1">My entitys</a></li>
+        <li><a href="#tabs-2">Follower entitys</a></li>
+    </ul>
+    <div id="tabs-1">
+      <p>
+        <div id="myprofile_entitys">
+          <%= render :partial => "entitys/my_entity", :collection => @my_entitys %>
+        </div>
+      </p>
+    </div>
+    <div id="tabs-2">
+        <p>Morbi tincidunt, dui sit amet facilisis feugiat, odio metus gravida ante, ut pharetra massa metus id nunc. Duis scelerisque molestie turpis. Sed fringilla, massa eget luctus malesuada, metus eros molestie lectus, ut tempus eros massa ut dolor. Aenean aliquet fringilla sem. Suspendisse sed ligula in ligula suscipit aliquam. Praesent in eros vestibulum mi adipiscing adipiscing. Morbi facilisis. Curabitur ornare consequat nunc. Aenean vel metus. Ut posuere viverra nulla. Aliquam erat volutpat. Pellentesque convallis. Maecenas feugiat, tellus pellentesque pretium posuere, felis lorem euismod felis, eu ornare leo nisi vel felis. Mauris consectetur tortor et purus.</p>
+    </div>
+</div>
+
+<script type="text/javascript">
+  $(function() {
+    $("#tabs").tabs();
+  });
+  
+  $(document).ready(function(){
+    subscribeMyentitysEvents();
+    subscribeMyentityDeleteEvents();
+  });
+
+  function subscribeMyentitysEvents(){
+
+    $('a[id^="all_my_comments_link_"]').unbind("ajax:beforeSend").bind("ajax:beforeSend", function(jqXHR, settings){
+      var entityId = $(this).attr('entityId');
+      $('#my_ajax_loader_'+entityId).removeClass('no-disp');
+    });
+
+    $('a[id^="all_my_comments_link_"]').bind("ajax:success", function(evt, data, status, xhr){
+      agent = jQuery.browser;
+      if(agent.msie) {
+        evt.cancelBubble = true;
+      } else {
+        evt.stopPropagation();
+      }
+      var entityId = $(this).attr('entityId');
+      var page = $(this).attr('page');
+      $('#my_ajax_loader_'+entityId).addClass('no-disp');
+      if(page == 1){
+        $('#my_comment_stream_'+entityId).empty();
+        $('#my_comment_stream_'+entityId).append(data);
+        if($('#last_page_'+entityId).length==1){$('#really_all_my_comments_link_'+entityId).addClass('no-disp');}
+      }else{
+        $('#my_comment_stream_'+entityId+' > .comment_stream > .comment:last').removeClass('comment_last');
+        $('#my_comment_stream_'+entityId+' > .comment_stream > #more_my_comments_'+entityId+' >.comment:last').removeClass('comment_last');
+        $('#my_comment_stream_'+entityId+' > .comment_stream').append(data);
+        $('#my_comments_button_container_'+entityId).empty().append($('#my_comments_button_container_modify_'+entityId).html());
+        $('#my_comments_button_container_modify_'+entityId).remove();
+        if($('#last_page_'+entityId).length==1){$('#really_all_my_comments_link_'+entityId).addClass('no-disp');}
+      }
+      get_notify_count();
+      subscribeMyentitysEvents();
+    });
+
+    $('a[id^="really_all_my_comments_link_"]').unbind("ajax:beforeSend").bind("ajax:beforeSend", function(jqXHR, settings){
+      var entityId = $(this).attr('entityId');
+      $('#my_ajax_loader_'+entityId).removeClass('no-disp');
+    });
+
+    $('a[id^="really_all_my_comments_link_"]').bind("ajax:success", function(evt, data, status, xhr){
+      agent = jQuery.browser;
+      if(agent.msie) {
+        evt.cancelBubble = true;
+      } else {
+        evt.stopPropagation();
+      }
+      var entityId = $(this).attr('entityId');
+      $('#my_ajax_loader_'+entityId).addClass('no-disp');
+      $('#my_comment_stream_'+entityId).empty();
+      $('#all_my_comments_link_'+entityId).addClass('no-disp');
+      $('#my_comment_stream_'+entityId).append(data);
+      $('#collapse_my_comments_link_'+entityId).removeClass('no-disp');
+      if($('#last_page_'+entityId).length==1){$('#really_all_my_comments_link_'+entityId).addClass('no-disp');}
+      get_notify_count();
+      subscribeMyentitysEvents();
+    });
+
+    $('a[id^="collapse_my_comments_link_"]').bind("ajax:success", function(evt, data, status, xhr){
+      agent = jQuery.browser;
+      if(agent.msie) {
+        evt.cancelBubble = true;
+      } else {
+        evt.stopPropagation();
+      }
+      var entityId = $(this).attr('entityId');
+      $('#my_comment_stream_'+entityId).empty();
+      $('#my_comment_stream_'+entityId).append(data);
+      $('#really_all_my_comments_link_'+entityId).removeClass('no-disp');
+      subscribeMyentitysEvents();
+    });
+  }
+
+  /**
+   * Subscribe all jquery events for deleteing my entity functionality
+   * if user rolls over entity posted by him then delete button appears at right bottom part of entity
+   * when user click on "delete button" fancy box with delete confirmation appears
+   */
+  function subscribeMyentityDeleteEvents(){
+    $('[id^="my_entity_block_"]').unbind("mouseover").bind("mouseover", function(){
+      var entityId = $(this).attr('entityId');
+      //$('#delete_entity_'+entityId).fadeIn(200);
+      $('#delete_my_entity_'+entityId).fadeIn(200);
+    });
+
+    $('[id^="my_entity_block_"]').unbind("mouseleave").bind("mouseleave", function(){
+      var entityId = $(this).attr('entityId');
+      //$('#delete_entity_'+entityId).fadeOut(200);
+      $('#delete_my_entity_'+entityId).fadeOut(200);
+    });
+
+    $('a[id^="delete_my_entity_"]').fancybox({
+      'autoScale'			: false,
+      'width'                       : 380,
+      'height'                      : 160,
+      'transitionIn'		: 'fade',
+      'transitionOut'		: 'fade',
+      'opacity'                     :true,
+      'titleShow'                   :false
+    });
+
+    $('div[id^="popupform_"] > form').unbind("ajax:success").bind("ajax:success", function(evt, data, status, xhr){
+      //stop event propagation up the DOM
+      agent = jQuery.browser;
+      if(agent.msie) {
+        evt.cancelBubble = true;
+      } else {
+        evt.stopPropagation();
+      }
+      var resp = xhr.responseText.slice(1, xhr.responseText.length-1).split(",");
+      var entityId = resp[0];
+      var archived = resp[1];
+      if(archived){
+        $('#entity_block_'+entityId).hide(400);
+        $('#my_entity_block_'+entityId).hide(400);
+      }
+    });
+  };
+
+</script>

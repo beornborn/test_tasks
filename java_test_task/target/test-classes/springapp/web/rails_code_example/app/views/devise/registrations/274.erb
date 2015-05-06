@@ -1,0 +1,135 @@
+<body class="create-account">
+  <div id="container">
+    <header>
+     <section class="clearfix">
+      <figure>
+       <p><%= image_tag 'mobile/entitys-logo.png', width: "82", height: "28", alt: "entitys Logo" %></p>
+      </figure>
+      <h1>Create Account</h1>
+      <%= render :partial => "entitys/logout_header_mobile" %>
+     </section> 
+     <%= render :partial => "entitys/header_mobile", :locals => {:page => ''} %>
+    </header>
+    <div id="error_box"></div>
+    <div id="main" role="main">
+     <section id="IDquickConnect" class="clearfix">
+      <h2>Quick Connect:</h2>
+      <ul>
+       <li><%=link_to "Facebook", "javascript:void()", {:id=>"fb_connect", :class=>"fb ir"}%></li>
+       <li><%=link_to "Twitter", "javascript:void()", {:id=>"twitter_connect", :class=>"tw ir"}%></li>
+      </ul>
+     </section>
+     <%= form_for(resource, :as => resource_name, :url => registration_path(resource), :remote=>true, :html =>{ :id=>"sign_up_form", "data-type"=>"html"}) do |f| %>
+      <%= f.label 'Name' %>
+      <%=f.text_field "name", {id: "TXTname"}%>
+      <%= f.label 'User Name' %>
+      <%=f.text_field "user_name", {id: "TXTuserName"}%>
+      <%= f.label 'Password' %>
+      <%=f.password_field "password", {id: "PSWpass"}%>
+      <%= f.label 'Confirm Password' %>
+      <%=f.password_field "password_confirmation", {id: "PSWconfPass"}%>
+      <%= f.label 'Email' %>
+      <%=f.text_field "email", {id: "EMLemail"}%>
+      <table class="gender_and_datepick_holder">
+       <tr>
+        <td style="width: 79px;">
+          
+               <%=f.select :gender, [:Gender, :Male, :Female], {id: "SELgender"} %>
+           
+        </td>
+        <td align="center">
+          <div class="datepicker_container">
+            <%=f.text_field "dob", {class: "form datepicker sign_up_datepick", size: "10", title: "date of birth", placeholder: "mm/dd/yyyy" }%>
+          </div></td>
+       </tr>
+     </table>
+
+ <table class="gender_and_datepick_holder">
+       <tr>
+        <td>
+
+               <%=f.check_box :terms_of_service, id: "CHKterms"%>
+
+        </td>
+        <td align="left">
+           <label for="CHKterms" class="inline">By clicking Sign Up to entitys you agree to all the </label></td>
+           <td align="right" style="width:150px;"><%= link_to ('Terms &amp; Conditions').html_safe, '/terms_conditions', class: "termcond_link" %></td>
+       </tr>
+     </table>
+
+     
+
+
+       
+    
+      <%=submit_tag "Create Account"%>
+     <% end %>
+    </div>
+  </div><!--! end of #container -->
+</body>
+</html>
+
+<script type="text/javascript">
+
+$(document).ready(function(){
+      
+    $('#fb_connect').click(function(){
+      window.parent.location = "http://"+"<%=request.host_with_port%>"+"/auth/facebook";
+    });
+
+    $('#twitter_connect').click(function(){
+      window.parent.location = "http://"+"<%=request.host_with_port%>"+"/auth/twitter";
+    });
+    
+    $('#sign_up_form')
+    .bind("ajax:success", function(evt, data, status, xhr){
+      if (xhr.responseText != 'saved'){
+        
+        <%#*save error%>
+        var obj = jQuery.parseJSON(xhr.responseText);
+        var out = ''
+        if (typeof(obj.name) != "undefined"){
+          out += 'name '+obj.name[0];
+        };
+
+        if (typeof(obj.user_name) != "undefined"){
+          out += '<br>username '+obj.user_name[0];
+        };
+
+        if (typeof(obj.email) != "undefined"){
+          out += '<br>email '+obj.email[0];
+        };
+
+        if (typeof(obj.password) != "undefined"){
+          out += '<br>password '+obj.password[0];
+        };
+
+        if (typeof(obj.gender) != "undefined"){
+          out += '<br>gender '+obj.gender[0];
+        };
+
+        if (typeof(obj.terms_of_service) != "undefined"){
+          out += '<br>terms of service '+obj.terms_of_service[0];
+        };
+
+        if (typeof(obj.dob) != "undefined"){
+
+        var dob="day of birth ";
+        if (obj.dob[0]=="You are not of legal age to use this site"){
+          dob="";
+        }
+        out += '<br> '+dob+obj.dob[0];
+        };
+        $('#error_box').html(out);
+      }else{ 
+        <%#*saved successfully%>
+        location = 'http://'+"<%=request.host_with_port%>"+"/thank_you";
+      };    
+    })
+    .bind("ajax:error", function(evt, xhr, status, error){
+      $('#error_box').html(xhr.responseText);
+    });
+    
+});    
+
+</script>

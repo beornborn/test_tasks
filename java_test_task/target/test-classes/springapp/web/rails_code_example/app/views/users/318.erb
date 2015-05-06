@@ -1,0 +1,225 @@
+<style>html { position: relative; } /* Фикс для оперы */
+  html {overflow:auto !important;}
+  body {background: #F5F5F5;}
+</style>
+<div id="response_area_settings" class="popup" style="display: none"></div>
+<div id="settings_popup" class="popup">
+  <div id="quick_connect_errors_settings" style="display: none"></div>
+    <% if current_user.present? %>
+    <div class="header">
+      <h1>Settings</h1>
+    </div>    
+    <div class="userpic" id="pic_do">
+      <div class="blocker">&nbsp;</div>
+      <%= image_tag(getUserAvatarForProfile(current_user)+'?'+Time.now.to_i.to_s, class: "fl-l", alt: "Avatar", size: "48x48", id: 'userpic_small') %>
+      <%#=form_for current_user, :url=>'/save_avatar', :method=>:put, :html=>{:id=>"avatar_form", :multipart => true} do |f|%>  
+        <%= file_field_tag :avatar %>
+        <%= link_to "Upload New Image", "#", class: "btn_sml fl-l file_input_trn", id: 'click_avatar', onclick: "$('#avatar').click();"%>
+      <%#end%>
+    </div>
+  
+  <%=form_for current_user, :url=>user_save_settings_path(current_user.id), :remote=>true, :method=>:put, :html=>{:id=>"settings_form"} do |f|%>  
+  
+    <%=f.text_field "name", {class: "form", size: "30", placeholder: "Name"}%>
+    <%=f.text_field "user_name", {class: "form", size: "30", placeholder: "User Name"}%>
+    <%=f.password_field "password", {class: "form", size: "30", placeholder: "Password"}%>
+    <%=f.password_field "password_confirmation", {class: "form", size: "30", placeholder: "Confirm Password"}%>
+    <%=f.text_field "email", {class: "form", size: "30", placeholder: "Email"}%>
+
+
+  <div id="settings_checkbox_holder" class="checkbox"> </br>
+    Email me when<br /> </br>
+    <%=f.check_box "comment_notification_enable", :id=>"comment_notification_enable"%>
+    <label for="comment_notification_enable" style="font-weight: normal !important;">Someone replies to a entity I post</label><br />
+    <%=f.check_box "follow_notification_enable", :id=>"follow_notification_enable"%>
+    <label for="follow_notification_enable" style="font-weight: normal !important;">Someone I follow posts</label>
+    </br>
+    </br>
+    Email me with<br /> </br>
+    <%=f.check_box "product_notification_enable", :id=>"product_notification_enable"%>
+    <label for="product_notification_enable" style="font-weight: normal !important;">Updates about new entitys products, features, and tips</label><br />
+    <%=f.check_box "account_product_notification_enable", :id=>"account_product_notification_enable"%>
+    <label for="account_product_notification_enable" style="font-weight: normal !important;">Service updates related to my entitys account</label>
+<br />
+  </div>
+    <%=submit_tag "Submit", class: "btn_red fl-r", size: "30"%>
+
+    <div class="clr"></div>
+    <div class="checkbox deactivate_account">
+      <%=check_box_tag "deactivate_account"%>    
+      <label for="deactivate_account">Deactivate account</label>
+    </div>
+
+  <%end%>
+  <%end%>
+
+  <%= link_to "Deactivate account", deactivate_user_path(), :id=>"deactivate_account_link", :remote => true, :method => :delete %>
+
+</div>
+<div id="image_resize" class="popup" ></div>
+<%= javascript_include_tag 'jquery.Jcrop' %>
+
+<%= javascript_include_tag 'jquery.ajaxfileupload' %>
+
+<script>
+  $(document).ready(function(){
+    
+  var data = {};
+      data[$("meta[name='csrf-param']").attr("content").toString()] = $("meta[name='csrf-token']").attr("content");
+    
+    $("#avatar").hover(
+        function(){
+            $('#click_avatar').addClass("btn_sml_hover");
+            $('#avatar').validationEngine('showPrompt', 'Image uploaded cannot be undone once you select a new image.', 'load', 'topRight', true);
+        },
+        function(){
+            $('#click_avatar').removeClass("btn_sml_hover").removeClass("btn_sml_active");
+            $('#avatar').validationEngine('hide');
+        }
+    )      
+    .mousedown(
+        function(){
+               $('#click_avatar').removeClass("btn_sml_hover").addClass("btn_sml_active");
+        }
+    );    
+    
+    $('#avatar').ajaxfileupload({
+    'action': '/save_avatar',
+    'params': data,
+    'valid_extensions' : ['gif','png','jpg','jpeg'],
+    'onComplete': function(response) {
+      $('#image_resize').empty();
+      $('#image_resize').html(response);
+      $('#image_resize').show();
+      $("#image_resize").find("#userpic_full").Jcrop(
+      {
+        onChange: update_crop,
+        onSelect: update_crop,
+        setSelect: [0, 0, 500, 500],
+        aspectRatio: 1
+      }
+    );
+    },
+    'onStart': function() {
+      $('#click_avatar').removeClass("btn_sml_hover").removeClass("btn_sml_active");
+      $('#avatar').validationEngine('hide');
+      $('#settings_popup').fadeOut();
+    },
+    'onCancel': function() {
+      $('#click_avatar').removeClass("btn_sml_hover").removeClass("btn_sml_active");
+      $('#avatar').validationEngine('hide');
+      $('#settings_popup').show();
+    }
+
+  });   
+  
+  $("body").on('ajax:success', '#crop_userpic', function(evt, data, status, xhr){
+    if (xhr.responseText == 'saved'){
+        $.ajax({
+            type: "GET",
+            url: "/get_avatar",
+            success: function(response){
+              $("#userpic_small").attr("src",response+'?'+Math.random());
+            },
+            error: function(response){
+              $('#user_name').validationEngine('showPrompt', response, 'error', 'topLeft', false);
+            }
+        })
+      }
+      $('#settings_popup').show();    
+  });
+  $("body").on('ajax:error', '#crop_userpic', function(evt, data, status, xhr){
+    $('#settings_popup').show();
+    $('#user_name').validationEngine('showPrompt', xhr.responseText, 'error', 'topLeft', false);
+  });
+  $("body").on('ajax:beforeSend', '#crop_userpic', function(evt, data, status, xhr){
+    $('#image_resize').fadeOut();
+  });
+  
+  $(".form").click(function() {
+    $(this).validationEngine('hide');
+  });  
+ 
+  $('#deactivate_account').button();
+  $('#comment_notification_enable').button();
+  $('#follow_notification_enable').button();
+  $('#product_notification_enable').button();
+  $('#account_product_notification_enable').button();
+
+  $('#deactivate_account_link').hide();
+  $('#comment_notification_enable').hide();
+  $('#follow_notification_enable').hide();
+  $('#product_notification_enable').hide();
+  $('#account_product_notification_enable').hide();
+  $('input').placeholder();
+  
+  $('#settings_form')
+  .bind("ajax:success", function(evt, data, status, xhr){
+      if (xhr.responseText != 'saved'){
+        <%#*save error%>
+        var obj = jQuery.parseJSON(xhr.responseText);
+
+        if (typeof(obj.name) != "undefined"){
+          $('#user_name').addClass("error").validationEngine('showPrompt', obj.name[0], 'error', 'bottomLeft', true);
+        }else{
+          $('#user_name').removeClass("error");
+        };
+
+        if (typeof(obj.user_name) != "undefined"){
+          $('#user_user_name').addClass("error").validationEngine('showPrompt', obj.user_name[0], 'error', 'bottomLeft', true);
+        }else{
+          $('#user_user_name').removeClass("error");
+        };
+
+        if (typeof(obj.password) != "undefined"){
+          $('#user_password, #user_password_confirmation').addClass("error").validationEngine('showPrompt', obj.password[0], 'error', 'bottomLeft', true);
+        }else{
+          $('#user_password, #user_password_confirmation').removeClass("error");
+        };
+
+        if (typeof(obj.email) != "undefined"){
+          $('#user_email').addClass("error").validationEngine('showPrompt', obj.email[0], 'error', 'bottomLeft', true);
+        }else{
+          $('#user_email').removeClass("error");
+        };
+
+        <%#*$('#response_area_settings').show();%>
+          
+      }else{ 
+       
+        <%#*saved successfully%>
+        if ($("#deactivate_account").attr("checked") != 'checked') { 
+          $('#settings_popup').fadeOut();
+          $('#response_area_settings').show().html("Settings saved successfully.");
+          setTimeout("parent.location.reload()",3000); 
+        };  
+      };    
+    })
+    .bind("ajax:error", function(evt, xhr, status, error){
+      $('#user_name').validationEngine('showPrompt', xhr.responseText, 'error', 'topLeft', false);
+      <%#*$("#quick_connect_errors_settings").show();%>
+      <%#*$('#quick_connect_errors_settings').html(xhr.responseText);%>
+    })
+    .bind("ajax:beforeSend", function(){
+      var search = $("#deactivate_account").attr("checked");
+      if (search=='checked') {$("#deactivate_account_link").click();}
+    });
+  
+  $('#deactivate_account_link')
+  .bind("ajax:beforeSend", function(){$('#ssettings_form').fadeTo('fast', 0.5)})
+  .bind("ajax:complete", function(evt, data, status, xhr){
+    $('#settings_form').fadeOut();
+    $("#quick_connect_errors_settings" ).show();
+    $('#quick_connect_errors_settings').html("Your account has been deactivated. Please email support@entitys.com with your contact information to reactivate your account");
+  });
+  
+  });
+  
+  function update_crop(coords) {
+  $("#crop_x").val(coords.x);
+  $("#crop_y").val(coords.y);
+  $("#crop_w").val(coords.w);
+  $("#crop_h").val(coords.h);
+}
+   
+</script>

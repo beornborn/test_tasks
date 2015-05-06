@@ -1,0 +1,11 @@
+<% breakingentity.bf_comments.each_with_index do |reply, index|%>
+    <%if index == 0 || index == breakingentity.bf_comments.size - 2 || index == breakingentity.bf_comments.size - 1%>
+        <%= render :partial => "entitys/bf_comment", :locals => {:reply => reply, :index=> index, :state=> "expanded"} %>
+        <%if index == 0 && breakingentity.bf_comments.size > 3%>
+            <%=link_to getViewAllCommentsLinkTitleBfComments(breakingentity, 1), load_comments_breakingentity_path(:id=>breakingentity.id, :page=>1),
+                       :entityId=>"breakingentitys_#{reply.breakingentity_id}", :id=>"all_comments_link_breakingentitys", :page=>1,
+                       :method=>:post, :remote=>true, :"data-type" => "html", :class=>"comments_viewall_button btn_sml"%>
+            <div class="clr"></div>
+        <%end%>
+    <%end%>
+<%end%>

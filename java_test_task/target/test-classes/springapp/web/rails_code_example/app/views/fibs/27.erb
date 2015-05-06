@@ -1,0 +1,133 @@
+<% if params[:controller] == "entitys" and params[:action] == "search" and @entitys.present? and (params[:q].present? or params[:tag].present? ) %>
+  <div style="position: relative; padding-left: 5px; padding-top: 10px">
+    <table align="center" id="no_result_table"><tr><td><p class="entitytext">Search results for <b><%= params[:q].present? ? params[:q] : params[:tag] %></b></p></td></tr></table>
+  </div>
+  <% end %>
+<%= render(:partial => "entitys/entity_mobile", :collection => @entitys, :as => :entity) || render(:partial => "entitys/empty") %>
+<div id="more_content"></div>
+<div class="ajax_loader no-disp">
+    <%=image_tag("ajax_loader.gif")%>
+</div>
+<% if @entitys.present? %>
+<%=link_to "view more", '#', class: 'vm_link', id: 'view_more'%>
+<div class="mobileoff_holder"><%=link_to "view full site", {:controller => "entitys", :action => "change_layout"}, :id=> "change_layout_link", :class=>"vm_link"%></div>
+<% end %>
+<div id="tag" class="no-disp"><%=@tag%></div>
+<div id="query" class="no-disp"><%=@q%></div>
+
+<script type="text/javascript">
+ 
+  <%#*$("#image_logo").on("click", function(){%>
+ <%#*$("#change_layout_link").trigger("click");%>
+<%#*});%>
+ 
+  $(".photo_body img").on("click", function(event){
+  var maxwidth = $(this).css("max-width");
+  var width = $(this).width();
+  var height = $(this).height();
+  if (maxwidth=="100px" && (width=="100" || height=="100")){
+      $(this).css("max-width", "260px");
+      $(this).css("max-height", "260px");
+      $(this).css("border", "3px solid #FFFFFF");
+      } else {
+         $(this).css("max-width", "100px");
+      $(this).css("max-height", "100px");
+      $(this).css("border", "0px solid #FFFFFF");
+      }
+       
+    });
+ 
+   $(".button_share").on("click", function(event){
+   
+      var entityid = $(this).attr("entityid");
+       $.ajax({
+          type: "POST",
+          url: '/share_signal_for_statmix'
+        });
+      $("#span_share_this_"+entityid).trigger("click");
+     
+      return false;
+    });
+
+$(".likes").click(function(e){
+  e.preventDefault();
+  return false;
+});
+  var page = 1;
+  var start_send = false;
+  var start_view_comment = false;
+  var endOfContentIsReached = false;
+  var url = null;
+  
+  $('.feed').on('click','[id^="load_comments_"]', function(){
+    if (!start_view_comment && !$(this).attr('viewed')){
+      $(this).attr('viewed', true);
+      var entityid=$(this).attr('entityid');
+      $('#ajax_load_comment_'+entityid).removeClass('no-disp');
+      start_view_comment = true;
+      var csrf_data = {};
+      csrf_data[$("meta[name='csrf-param']").attr("content").toString()] = $("meta[name='csrf-token']").attr("content");
+      $.ajax({
+          url: $(this).attr('path'),
+          type: "POST",
+          success: function(data) {
+            $('#more_comment_'+entityid).append(data);
+            start_view_comment = false;
+            $('#ajax_load_comment_'+entityid).addClass('no-disp');
+          },
+          error: function(){
+            start_view_comment = false;
+            $('#ajax_load_comment_'+entityid).addClass('no-disp');
+          }
+      });
+    };
+    return false;
+  });
+  
+  $('#view_more').click(function(){
+    if (!endOfContentIsReached && !start_send){
+      $('#view_more').addClass('no-disp');
+      $('.ajax_loader').removeClass('no-disp');
+      start_send = true;
+      page++; 
+      var tag = null;
+      var q = null;
+   
+      if(<%=@tag.present?%>){
+        tag = encodeURIComponent($('#tag').html());
+        url = 'lazy_search?utf8=✓&m=1&tag='+tag+'&page=' + page;
+      }else{ 
+        if(<%=@q.present?%>){
+          q = encodeURIComponent($('#query').html());
+          url = 'lazy_search?utf8=✓&m=1&q='+q+'&page=' + page;
+        }else{
+          url = 'entitys/lazy_load?utf8=✓&m=1&page=' + page;
+        }
+      };
+      
+      $.ajax({
+            url: url,
+            type: "GET",
+            success: function(data) {
+              if(data.length > 1){
+                  $('#more_content').append(data);
+              }else{
+                  endOfContentIsReached = true;
+              }
+              start_send = false;
+              $('.ajax_loader').addClass('no-disp');
+              if (endOfContentIsReached == false) $('#view_more').removeClass('no-disp');
+              subscribeLikeEvents();
+            },
+            error: function(){
+              endOfContentIsReached = true;
+              start_send = false;
+              $('.ajax_loader').addClass('no-disp');
+              $('#view_more').removeClass('no-disp');
+            }
+        });
+    };   
+    return false;
+  });
+
+</script>

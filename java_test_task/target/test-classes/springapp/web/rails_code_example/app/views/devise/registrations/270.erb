@@ -1,0 +1,85 @@
+<div id="quick_connect_errors_create_account" style="display: none"></div>
+<div id="response_area_create_account" style="display: none;"></div>
+<%= form_for(resource, :as => resource_name, :url => registration_path(resource), :remote=>true, :html =>{ :id=>"sign_up_form", "data-type"=>"html"}) do |f| %>
+  <%=render :partial=>"shared/create_account", :locals => {:f => f}%>
+<% end %>
+
+<script>
+
+  $(document).ready(function(){
+    
+    $(".form").keypress(function() {
+      $(this).removeClass("error");
+    });
+    
+    $(".form, .ui-selectmenu-status, .ui-button-text").click(function() {
+      $(this).validationEngine('hide');
+    });      
+    
+    $('#sign_up_form')
+    .bind("ajax:success", function(evt, data, status, xhr){
+      if (xhr.responseText != 'saved'){
+<%#*save error%>
+        var obj = jQuery.parseJSON(xhr.responseText);
+        if (obj.dob=="You are not of legal age to use this site"){
+          $('#sign_up_form').fadeOut();
+          location = 'http://'+"<%=request.host_with_port%>"+"/not_allowed_to_use";
+        } else {
+
+        if (typeof(obj.name) != "undefined"){
+          $('#user_name').addClass("error").validationEngine('showPrompt', obj.name[0], 'error', 'bottomLeft', true);
+        }else{
+          $('#user_name').removeClass("error");
+        };
+
+        if (typeof(obj.user_name) != "undefined"){
+          $('#user_user_name').addClass("error").validationEngine('showPrompt', obj.user_name[0], 'error', 'bottomLeft', true);
+        }else{
+          $('#user_user_name').removeClass("error");
+        };
+
+        if (typeof(obj.email) != "undefined"){
+          $('#user_email').addClass("error").validationEngine('showPrompt', obj.email[0], 'error', 'bottomLeft', true);
+        }else{
+          $('#user_email').removeClass("error");
+        };
+
+        if (typeof(obj.password) != "undefined"){
+          $('#user_password, #user_password_confirmation').addClass("error").validationEngine('showPrompt', obj.password[0], 'error', 'bottomLeft', true);
+        }else{
+          $('#user_password, #user_password_confirmation').removeClass("error");
+        };
+
+        if (typeof(obj.gender) != "undefined"){
+          $('.ui-selectmenu-status').validationEngine('showPrompt', obj.gender[0], 'error', 'bottomLeft', true);
+        }else{
+
+        };
+
+        if (typeof(obj.terms_of_service) != "undefined"){
+          $('.ui-button-text').validationEngine('showPrompt', obj.terms_of_service[0], 'error', 'bottomLeft', true);
+        }else{
+
+        };
+
+        if (typeof(obj.dob) != "undefined"){
+          $('#user_dob').addClass("error").validationEngine('showPrompt', obj.dob[0], 'error', 'bottomLeft', true);
+        }else{
+          $('#user_dob').removeClass("error");
+        };
+        };
+      }else{ 
+<%#*saved successfully%>
+        $('#sign_up_form').fadeOut();
+        location = 'http://'+"<%=request.host_with_port%>"+"/thank_you";
+      };    
+    })
+    .bind("ajax:error", function(evt, xhr, status, error){
+      $( "#quick_connect_errors_create_account" ).show();
+      $('#quick_connect_errors_create_account').html(xhr.responseText);
+    });
+
+  });
+
+</script>
+<%#= render :partial => "devise/shared/links" %>

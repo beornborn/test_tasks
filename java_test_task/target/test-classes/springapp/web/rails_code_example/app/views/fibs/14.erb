@@ -1,0 +1,14 @@
+<div style="display: none;">
+<div id="delete_entity_popup_<%=entity.id%>" class="popup" style="width: 370px; height: 150px;">
+
+	<div class="header">
+		<h1>Delete entity?</h1>
+	</div>
+  <%=form_for :entity, :url=>entity_path(:id=>entity.id), :remote=>true, :method=>:delete do |f|%>
+	<div class="button a-center">
+          <input class="btn_blk no-marg" type="button" onclick="$.fancybox.close();" value="No" />
+          <input class="btn_red" type="submit" onclick="$.fancybox.close();" value="Yes" />
+	</div>
+  <%end%>
+</div>
+</div>

@@ -1,0 +1,3 @@
+<%replies.each_with_index do |reply, index|%>
+    <%= render :partial => "entitys/comment", :locals => {:reply => reply, :index=> index, :state=>"expanded"} %>
+<%end%>

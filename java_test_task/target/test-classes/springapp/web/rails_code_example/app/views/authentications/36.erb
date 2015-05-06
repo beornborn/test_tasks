@@ -1,0 +1,6 @@
+<script type="text/javascript">
+  var isInIFrame = (window.location != window.parent.location) ? true : false;
+  if(isInIFrame) {
+    window.parent.location = '/';
+  } else window.location = '/';
+</script>

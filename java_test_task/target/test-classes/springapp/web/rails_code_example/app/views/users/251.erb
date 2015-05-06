@@ -1,0 +1,18 @@
+<div id="content">
+  <div id="content_left">
+    <%=render :partial=>"entitys/post_entity"%>
+    <%=render :partial=> "entitys/entitys"%>
+  </div>
+
+  <div id="content_right">
+    <div id="myprofile">
+        <%= render :partial => "entitys/social_find_us" %>
+        <br />
+        <%= render :partial => "users/my_profile" %>
+        <%= render :partial => "entitys/my_entitys" %>
+    </div>
+    <%= render :partial => "shared/footer" %>
+  </div>
+  <div class="clr"></div>
+</div>
+

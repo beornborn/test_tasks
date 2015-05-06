@@ -1,0 +1,19 @@
+@CHARSET "UTF-8";
+a:link{
+color: #0000CC;
+text-decoration:none;
+}
+a:active{
+color: #0000CC;
+}
+a:hover{
+text-decoration:underline;
+color: #0000CC;
+}
+a:visited{
+color: #0000CC;
+}
+.body {background-color: #FFFFFF;}
+.messagesuccess {color: CC0000;}
+.hcenter { width: 500px; text-align: center; padding-left: 400px;}
+.hcentertab { width: 500px; text-align: center; padding-left: 550px;}

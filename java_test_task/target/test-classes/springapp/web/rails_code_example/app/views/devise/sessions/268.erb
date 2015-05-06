@@ -1,0 +1,33 @@
+<div id="shared_links" style="display: none;"><%= render :partial => "devise/shared/links" %></div>
+
+<%= form_for(resource, :as => resource_name, :url => session_path(resource_name), :remote=>"true", :html=>{:id => :log_in_form, "data-type"=>"html"}) do |f| %>
+  <%=render :partial=>"shared/login", :locals=>{:f=>f}%>
+<% end %>
+
+
+<script>
+  $(document).ready(function(){
+   
+   $(".form").click(function() {
+         $('#user_email').validationEngine('hide');
+    })
+    
+   $('#log_in_form')
+    .bind("ajax:success", function(evt, data, status, xhr){
+      $('#user_email').validationEngine('hide');
+      $('#log_in_form').fadeOut();
+      window.parent.location='/';
+    })
+    .bind("ajax:error", function(evt, xhr, status, error){
+      $('#user_email').validationEngine('showPrompt', xhr.responseText, 'error', 'topLeft', false)
+      <%#*$("#quick_connect_errors_login").show();%>
+      <%#*$('#quick_connect_errors_login').html(xhr.responseText);%>
+           
+      if(xhr.responseText == "<%= I18n.t('devise.failure.unconfirmed') %>"){
+        $('#shared_links').show();}
+    });
+
+  });
+
+</script>
+

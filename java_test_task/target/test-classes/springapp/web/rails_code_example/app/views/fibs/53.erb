@@ -1,0 +1,52 @@
+<div id="form_wrapper_breakingentity_<%=breakingentity.id%>" class="commentreply commentreply_breakingentity" style="display: none;">
+
+  <%=form_tag '/bf_comment/new', :method=>:post, :remote=>true, :id => 'entity_comment_form_breakingentity', :"data-update-target" => "comment_stream_breakingentitys_#{breakingentity.id}", :"entityId" => 'breakingentity',  :"data-type" => "html"  do |f|%>
+    <%=hidden_field :bf_comment, :user_id, {:value=>current_user.id} if current_user%>
+    <%=hidden_field :bf_comment, :anonymous, {:value=>current_user.anonymous} if current_user%>
+    <%=hidden_field :bf_comment, :breakingentity_id, {:value=>breakingentity.id}%>
+    <%=hidden_field_tag "utf8", "✓"%>
+    <%=hidden_field_tag "authenticity_token", ""%>
+    <%=hidden_field_tag "comment_state", false%>
+
+
+    <%=text_area :bf_comment, :body, :id=>"comment_body_#{breakingentity.id}",:class=>"default textarea_entity", :value=>  (@keeped_data.present? && @keeped_data[:saved_text]!='' && @keeped_data[:place_of_request]=="breakingentity") ? @keeped_data[:saved_text] : ""%>
+
+    <div class="commentreply_option">
+      <input type="file" name="insert_video_link" class="addphoto_field no-disp" />
+      <input name="insert_video_link" type="text" value="Insert link..." class="addvideo_field no-disp" />
+      <div class="clr"></div>
+      <a href="#" id="post_comment_link_photo_breakingentity" class="addphoto no-disp">
+        <span class="no-disp">
+          Add a photo<span></span>
+        </span>
+      </a>
+      <a href="#" id="post_comment_link_video_breakingentity" class="addvideo_active no-disp">
+        <span class="no-disp">
+          Add a YouTube Video<span></span>
+        </span>
+      </a>
+      <%=link_to "<span class=\"no-disp\">Be anonymous<span></span></span>".html_safe,
+                 toggle_anonymous_user_path(:id=>current_user!= nil ? current_user.id : -1), :id=>"post_comment_link_anonymous_breakingentity",
+                 :method=>:get, :remote=>true, :class=>resolveUserAnonymousIconClass(current_user), :entityid=>"breakingentity" %>
+      <div class="clr"></div>
+    </div>
+
+    <div class="commentreply_submit">
+      <%#*<div class="commentreply_socialconnect">%>
+        <%#*<span class="commentreply_fb"><input type="checkbox" name="commentreply_facebook" /></span>%>
+        <%#*<span class="commentreply_tw"><input type="checkbox" name="commentreply_twitter" /></span>%>
+      <%#*</div>%>
+      <div class="commentreply_wordcount">140</div>
+      <%=submit_tag "Post", :id=>"postcomment_button_#{breakingentity.id}", :"entityId" => "#{breakingentity.id}", :disable_with => 'Post', :class=>"commentreply_button btn_red commentreply_breakingentity_button", :"breakingentity"=>"true"%>
+      <div class="clr"></div>
+    </div>
+
+  <%end%>
+ 
+   <% if (@keeped_data.present? && @keeped_data[:place_of_request]=="breakingentity") then %>
+     <script type="text/javascript">
+       $("#form_wrapper_<%=  @keeped_data[:place_of_request] %>").show();
+     </script>
+   <% end %>
+  <div class="clr"></div>
+</div>

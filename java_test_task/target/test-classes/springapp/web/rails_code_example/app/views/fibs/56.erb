@@ -1,0 +1,152 @@
+<body class="post">
+  <div id="container">
+    <header>
+      <section class="clearfix">
+        <figure>
+          <p><%= image_tag 'mobile/entitys-logo.png', width: "82", height: "28", alt: "entitys Logo" %></p>
+        </figure>
+        <% if page == 'new' %><h1>New Post</h1><% end %>
+        <% if page == 'comment' %><h1>Post Comment</h1><% end %>
+        <%= render :partial => "entitys/logout_header_mobile" %>
+      </section>
+      <%= render :partial => "entitys/header_mobile", :locals => {:page => 'post'} %>
+    </header>
+    <div id="error_box"></div>
+    <div id="main" role="main">
+      <% if page == 'new' %>
+        <%= form_for @entity, html: {id: 'new_entity'} do |f| %>
+          <%=f.file_field :photo, class: "many-left-disp" %>
+            <%=hidden_field_tag "utf8", "✓"%>
+            <%=hidden_field_tag "authenticity_token", form_authenticity_token.to_s%>
+            <%=f.text_area :body, :class=>"default post_text_area", :placeholder=> "Share Your entitys" %>
+            <span id="postentity_wordcount">140</span>
+            <%=select_tag :category, options_from_collection_for_select(@categories_for_select, "tag", "hashtag"), :prompt => "Category"%>
+          <% end %>
+
+        </div>
+
+        <%= link_to 'Post', '#', id: "signup", onclick: 'return false;' %>
+        <div id="header_holder" class="no-disp" header="<%= request.headers["HTTP_USER_AGENT"].scan("iPhone OS 6") %>"></div>
+        <footer class="<%= resolveUserAnonymousIconClassMobile(current_user) %>" id ="anon_tgl_footer">
+          <div id="photo_button_holder">  <%= link_to "#", class: "addphoto", id: "post_entity_link_photo", onclick: "javascript:document.getElementById('entity_photo').click();return false;" do %>
+              <span class="no-disp">
+                Add a photo<span></span>
+              </span>
+            <% end %>
+          </div>
+            <div id ="anon_tgl">
+              <div class="shades"></div>
+              <div id="anonym_text">
+               <%= resolveUserAnonymousText(current_user) %>
+              </div>
+            </div>
+          </footer>
+          <% if flash[:error]=="this man is a spamer" %>
+            <script type="text/javascript">
+              $('#error_box').html("Your entity contains spam content. Please rewrite it in another way.");
+            </script>
+          <% end %>
+        <% end %>
+        <% if page == 'comment' %>
+          <%=form_for @entity, :method=>:post, :url => entitys_path, 'data-type' => "html", html: {id: 'new_entity'} do |f|%>
+            <%=hidden_field_tag "utf8", "✓"%>
+            <%=hidden_field_tag "authenticity_token", form_authenticity_token.to_s%>
+            <%=f.text_area :body, :class=>"default post_text_area", value: ''%>
+            <%=f.hidden_field :parent_entity_id, {:value=>@entity.id}%>
+            <%=hidden_field_tag "comment_state", false%>
+            <span id="postentity_wordcount">140</span>
+          <% end %>
+
+        </div>
+        <%= link_to 'Post', '#', id: "signup", onclick: 'return false;' %>
+      <footer class="<%= resolveUserAnonymousIconClassMobile(current_user) %>" id="anon_tgl">
+        <span class="shades"></span>
+        <div id="anonym_text">
+          <h2><%= resolveUserAnonymousText(current_user) %></h2>
+        </div>
+      </footer>
+    <% if flash[:error]=="this man is a spamer" %>
+            <script type="text/javascript">
+              $('#error_box').html("Your entity contains spam content. Please rewrite it in another way.");
+            </script>
+          <% end %>
+    <% end %>
+    </div><!--! end of #container -->
+    </body>
+    <%= javascript_include_tag  "jquery.placeholder" %>
+    <script type="text/javascript">
+      $(document).ready(function(){
+         $("#post_entity_link_photo").css("display", "block");
+        var ua = navigator.userAgent.toLowerCase();
+        var iPhone_OS_6=$("#header_holder").attr("header");
+        var isAndroid = ua.indexOf("android") > -1;
+        if (isAndroid || (iPhone_OS_6=="[\"iPhone OS 6\"]")){
+          $("#post_entity_link_photo").css("display", "block");
+          $("footer span.shades").css("margin-left", "56px");
+          $("footer h2").css("margin-top", "-27px");
+          $("footer h2").css("margin-left", "113px");
+          <%#*$("#anon_tgl").addClass("no-disp");%>
+
+          $('#entity_photo').change(function(){
+            $('#post_entity_link_photo').removeClass('addphoto').addClass('addphoto_full');
+            if ($('#entity_photo').attr("value")==""){
+              $('#post_entity_link_photo').removeClass('addphoto_full').addClass('addphoto');
+            }
+          });
+        }
+        $('textarea').placeholder();
+        $('#signup').click(function(){
+          if($.trim($('#entity_body').val()) == ""){
+            $('#error_box').html("entity can't be blank.");
+          }else{
+            if($('#category').val() == ""){
+              $('#error_box').html("Category can't be blank.");
+            }else{
+              $('#new_entity').submit();
+            };
+          };
+        });
+
+        $('#anon_tgl').click(function(){
+          var gb = $('#anon_tgl_footer');
+          $.ajax({
+            type: "GET",
+            url: '<%= toggle_anonymous_user_path(:id=>current_user!= nil ? current_user.id : -1) %>',
+            success: function(response){
+              var mtfoo = $("footer div#anonym_text").css("margin-top");
+              var mlfoo = $("footer div#anonym_text").css("margin-left");
+              gb.removeClass("anon non-anon");
+              if (response === "true"){
+                gb.addClass("anon");
+                $('#anonym_text').html('Anonymous Mode On');
+              }else{
+                gb.addClass("non-anon");
+                $('#anonym_text').html('Anonymous Mode Off');
+              }
+              $("footer div#anonym_text").css("margin-top", mtfoo);
+              $("footer div#anonym_text").css("margin-left", mlfoo);
+            },
+            error: function(httpObj, textStatus) {
+              if (httpObj.status==401){
+                window.location.href = '<%= new_user_session_path %>';
+              };
+            }
+          });
+        });
+    
+        var entity_MAX_LENGTH = 140; //entity message max length like in twitter application
+
+        $('#entity_body').attr("maxlength", entity_MAX_LENGTH);
+        //change available character counts for entity message
+        $('#entity_body').bind("keyup click blur focus change", function(){
+          var length = entity_MAX_LENGTH - $('#entity_body').val().length;
+          if(length <= 0){
+            length = 0;
+            $('#entity_body').val($('#entity_body').val().slice(0, entity_MAX_LENGTH));
+          }
+          $('#postentity_wordcount').html(length);
+          $('#error_box').html("");
+        });
+      });
+
+    </script>

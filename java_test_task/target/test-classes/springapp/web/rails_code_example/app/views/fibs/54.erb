@@ -1,0 +1,69 @@
+<div id="form_wrapper_<%=entity.id%>" class="commentreply" style="display: none;">
+  <%=form_tag entity.new, :method=>:post, :multipart => true , :remote=>true, :id => 'entity_comment_form_'+entity.id.to_s(10), :"data-update-target" => "comment_stream_"+entity.id.to_s(10), :"entityId" => entity.id.to_s(10),  :"data-type" => "html"  do |f|%>
+    <%#=hidden_field :entity, :user_id, {:value=>current_user.id} if current_user%>
+    <%#=hidden_field :entity, :anonymous, {:value=>current_user.anonymous} if current_user%>
+    <%=hidden_field :entity, :parent_entity_id, {:value=>entity.id}%>
+    <%=hidden_field_tag "utf8", "✓"%>
+    <%=hidden_field_tag "authenticity_token", ""%>
+    <%=hidden_field_tag "comment_state", false%>
+<%= token_tag(nil) %>
+
+    <%=text_area :entity, :body, :id=>"comment_body_"+entity.id.to_s(10),:class=>"default textarea_entity", :value=>  (@keeped_data.present? && @keeped_data[:saved_text]!='' && @keeped_data[:place_of_request]==entity.id.to_s(10)) ? @keeped_data[:saved_text] : "" %>
+
+    <div class="commentreply_option">
+      <input type="file" name="insert_video_link" class="addphoto_field no-disp" />
+      <input name="insert_video_link" type="text" value="Insert link..." class="addvideo_field no-disp" />
+      <div class="clr"></div>
+      <% @onclick =  current_user.present? ? "javascript:document.getElementById('entity_photo_#{entity.id}').click();return false;" : "javascript:$('#login_link').trigger('click');return false;" %>
+      <%= link_to "#", class: "addphoto", id: "post_entity_link_photo_#{entity.id}", onclick: @onclick  do %>
+        <span class="no-disp">
+          Add a photo<span></span>
+        </span>
+        <% end %>
+      <a href="#" id="post_comment_link_video_<%=entity.id%>" class="addvideo_active no-disp">
+        <span class="no-disp">
+          Add a YouTube Video<span></span>
+        </span>
+      </a>
+      <%=link_to "<span class=\"no-disp\">Be anonymous<span></span></span>".html_safe,
+                 toggle_anonymous_user_path(:id=>current_user!= nil ? current_user.id : -1), :id=>"post_comment_link_anonymous"+entity.id.to_s(10),
+                 :method=>:get, :entityid=>entity.id.to_s, :remote=>true, :class=>resolveUserAnonymousIconClass(current_user) %>
+      <div class="clr"></div>
+    </div>
+    <div class="commentreply_submit">
+      <div class="commentreply_socialconnect">
+        <span class="commentreply_fb"><input type="checkbox" name="commentreply_facebook" /></span>
+        <span class="commentreply_tw"><input type="checkbox" name="commentreply_twitter" /></span>
+      </div>
+      
+      <% if (@keeped_data.present? && @keeped_data[:twitter_state]=='true' && @keeped_data[:place_of_request]==entity.id.to_s(10)) then %>
+        <script type="text/javascript">
+          $("input[name='commentreply_twitter']").attr("checked", true);
+          $("input[name='commentreply_twitter']").parent().toggleClass('commentreply_tw commentreply_tw_active');
+        </script>
+      <% end %>
+
+      <% if (@keeped_data.present? && @keeped_data[:facebook_state]=='true' && @keeped_data[:place_of_request]==entity.id.to_s(10)) then %>
+        <script type="text/javascript">
+          $("input[name='commentreply_facebook']").attr("checked", true);
+          $("input[name='commentreply_facebook']").parent().toggleClass('commentreply_fb commentreply_fb_active');
+        </script>
+      <% end %>
+      <div class="commentreply_wordcount">140</div>
+      <%=submit_tag "Post", :id=>"postcomment_button"+entity.id.to_s(10), :"entityId" => entity.id.to_s(10), :disable_with => 'Post', :class=>"commentreply_button btn_red"%>
+      <div class="clr"></div>
+    </div>
+<div id="dummy"></div>
+      <%= link_to '', '#', id: "dummy3", onclick: 'return false' %>
+      <% if current_user.present? %>
+      <%= file_field :entity, :photo, class: "many-left-disp", id: "entity_photo_#{entity.id}", entityId: entity.id %>
+      <% end %>
+      <div id="dummy2"></div>
+  <%end%>
+  <% if (@keeped_data.present? && @keeped_data[:place_of_request]==entity.id.to_s(10)) then %>
+      <script type="text/javascript">
+        $("#form_wrapper_"+<%=  @keeped_data[:place_of_request] %>).show();
+      </script>
+  <% end %>
+  <div class="clr"></div>
+</div>

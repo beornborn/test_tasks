@@ -1,0 +1,42 @@
+<div style="display: none;">
+  <div id="edit_entity_box_<%=entity_id%>" style="">
+
+    <table cellpadding="0" cellspacing="0" style="">
+      <tbody>
+
+        <tr>
+          <td colspan="3" rowspan="2" style="vertical-align:top; width:348px">
+            <!-- Main inner div with data -->
+
+            <div id="popupform" >
+              <h2>Edit</h2>
+              <%=form_for :entity, :url => entity_path(entity_id), :method=>:put do |f|%>
+                <%=f.text_area :body, :value=>body, :id=>"entity_body_#{entity_id}", :style=>"width: 330px; height: 125px;margin:10px 0 0 0;"%>
+                <div style="text-align:right; margin-top:5px; vertical-align:middle">
+                  <span style="" id="word_count_<%=entity_id%>"><%=140-body.size+1%></span>
+
+                  <input name="Submit1" type="submit" value="" class="submit_button" />
+                </div>
+
+              <%end%>
+            </div>
+            <!-- END main div -->
+          </td>
+        </tr>
+
+      </tbody>
+    </table>
+  </div>
+</div>
+
+<script>
+  $(document).ready(function(){
+    $('#entity_body_<%=entity_id%>').bind("keyup click blur focus change paste", function(){
+      var length = 140 - $('#entity_body_<%=entity_id%>').val().length;
+      if(length >= 0)
+        $('#word_count_<%=entity_id%>').html(140 - $('#entity_body_<%=entity_id%>').val().length);
+      else
+        $('#entity_body_<%=entity_id%>').val($('#entity_body_<%=entity_id%>').val().slice(0, 140));
+    });
+  });
+</script>

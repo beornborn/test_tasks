@@ -1,0 +1,4 @@
+<%= render :partial => "entitys/entity_mobile", :collection => @my_entitys, :as => :entity %>
+<% if @last_entity.id == @my_entitys.last.id %>
+    <div id="end_of_data"></div>
+<% end %>

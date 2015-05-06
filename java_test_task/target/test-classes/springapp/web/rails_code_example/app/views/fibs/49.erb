@@ -1,0 +1,48 @@
+
+<div id="notify_head">
+  <h1>Notifications</h1><span></span>
+</div>
+<% if @notifications_data.count>0 %>
+  <div id="notify_body" class="notify_body">
+
+    <% id=0 %>
+    <% @notifications_data.each do |fn, index|  %>
+      <% if fn.parent_entity.id!=id then %>
+        <%  if index>0 then %>
+        </div></div>
+      <% end %>
+
+      <div id="notify_entity_<%=fn.parent_entity.id.to_s(10)%>" class="entity notify_only_for_count" entityId="<%=fn.parent_entity.id.to_s(10)%>">
+        <%= link_to 'Close', '#', class: "close", onclick: "return false;" %>
+          <p class="entitytext"><%= truncate_words(fn.parent_entity.body.truncate(55), 30, "...", fn.id).html_safe %></p>
+
+          <% id=fn.parent_entity.id %>
+
+          <div class="comment_stream">
+          <% end %>
+
+          <div class="comment comment_first" >
+            <p class="comment_text"> <span class="comment_username"><%= getTruncatedUserNameCustom(User.find(fn.user_id), 20) %></span>
+              <%=link_to "#{fn.body.html_safe}", "/entitys/#{fn.parent_entity_id}", :id=>"notification_link_"+fn.id.to_s(10) %>
+            </p>
+          </div>
+
+
+        <% end %>
+      </div></div>
+  <% end %>
+  <div id="notify_bottom">
+    <%=link_to "See all notifications", "/home", :class=>"btn_sml" %>
+    <%= link_to 'Clear all notifications', '#', class: "btn_sml red", id:"clear_all_notifications", onclick: "return false;" %>
+  </div>
+
+
+
+
+
+
+
+
+
+
+

@@ -1,0 +1,76 @@
+<div class="entity" entityId="<%=entity.id%>" id="entity_block_<%=entity.id%>">
+  <div class="entity_time">
+    <% if current_user.present? and current_user.id!=entity.user.id and !entity.anonymous %>
+      <% does_receive = current_user.does_receive_from?(entity.user_id) %>
+      <% follow_button_text = does_receive ? "unfollow" : "follow" %>
+      <% follow_link = does_receive ? unfollow_user_path(:id=>entity.user_id) : follow_user_path(:id=>entity.user_id) %>
+     <%=link_to follow_button_text, follow_link, :method=>:post, :entityId=>entity.id, :entityUserId=>entity.user_id,
+       :class=>"button_follow btn_sml fl-r follow_#{entity.user_id}", :remote=>true %>
+    <% end %>
+    <%#*:%>
+<%formatentityDate(entity.created_at)%>
+  </div>
+
+  <div class="entity_userpic">
+    <%= getUserAvatarLink(entity) %>
+    </div>
+
+    <div class="entity_wrap">
+
+      <div class="entity_body">
+        <p class="entityusername">
+        <%=getUserName(entity)%>
+        <% if (entity.user.email =="entitysanonim@entitysanonim.entitysanonim") then %>
+          <div class="anonymous_twitter"></div>
+        <% end %>
+        </p>
+        <p class="entitytext"><%=truncate_words(entity.body, 30, "...", entity.id).html_safe %></p>
+        <% if entity.photo.present? %>
+          <div class="photo_body">
+            <%= image_tag(entity.photo.url, class: "fl-l", alt: "Photo") %>
+            </div>
+          <% end %>
+          <div class="clr"></div>
+          <%= getYoutubeSearchvideo(entity.video).html_safe %>
+        </div>
+        <div class="clr"></div>
+
+        <%=formatentityLikeNumber(entity, "entity").html_safe%>
+
+        <div class="comment_stream" id="comment_stream_<%=entity.id%>">
+          <%= render :partial => "entitys/comments_collapsed", :locals => {:entity => entity}%>
+        </div>
+        <div id="ajax_loader_<%=entity.id%>" class="ajax_loader no-disp">
+          <%=image_tag("ajax_loader.gif")%>
+        </div>
+        <div class="entity_button">
+          <%=link_to "like", rate_up_entity_path(:id=>entity.id), :method=>:post, :remote=>true, :class=>"button_like btn_sml"%>
+          <a href="#" entityId="<%=entity.id%>" id="add_comment_<%=entity.id%>" class="button_comment btn_sml">comment</a>
+          <a href="#" entityid="<%=entity.id%>"  id="share_button_<%=entity.id%>" class="button_share btn_sml" >share</a>
+          <%if current_user.blank? == false && entity.user_id == current_user.id%>
+            <%=link_to "", "#delete_entity_popup_"+entity.id.to_s(10), :entityId=>entity.id,
+              :id=>"delete_entity_"+entity.id.to_s(10), :class=>"button_delete btn_sml fl-r", :style=>"display: none;"%>
+          <%end%>
+          <div>
+            <span  id="span_share_this_<%=entity.id%>"></span>
+            <script>
+              stWidget.addEntry({
+                "service":"sharethis",
+                "element":document.getElementById('span_share_this_<%=entity.id%>'),
+                "url":"<%=root_url[0..-2]+entity_path(entity)%>",
+                "title":"<%=truncate(entity.body,:length => 30).gsub(/[\n\r\t#]/, " ");%>",
+                "type":"small",
+                "text":"share" ,
+                "image":"<%=  root_url[0...-1]+image_path("external_nopic.png") %>",
+                "summary":""
+              });
+            </script>
+          </div>
+          <div class="clr"></div>
+        </div>
+      </div>
+
+      <div class="clr"></div>
+      <%=render :partial => "entitys/post_comment", :locals => {:entity => entity}%>
+      <%=render :partial => "entitys/delete_confirmation", :locals => {:entity => entity}%>
+    </div>

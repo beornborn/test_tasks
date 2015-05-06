@@ -1,0 +1,67 @@
+<style>html { position: relative; } /* Фикс для оперы */
+  html {overflow:auto !important;}
+  body {background: #F5F5F5;}
+</style>
+
+<div id="create_account_popup" class="popup">
+  <div class="header">
+    <h1>Create Account</h1>
+    <div class="quick_connect">
+      Quick Connect:
+      <%=link_to "Facebook Connect", "javascript:void()", {:id=>"fb_connect", :class=>"social facebook"}%>
+      <%=link_to "Twitter Connect", "javascript:void()", {:id=>"twitter_connect", :class=>"social twitter"}%>
+    </div>
+    <div class="clr"></div>
+  </div>
+
+  <%=f.text_field "name", {class: "form", size: "30", placeholder: "Name"}%>
+  <%=f.text_field "user_name", {class: "form", size: "30", placeholder: "User Name"}%>
+  <%=f.password_field "password", {class: "form", size: "30", placeholder: "Password"}%>
+  <%=f.password_field "password_confirmation", {class: "form", size: "30", placeholder: "Confirm Password"}%>
+  <%=f.text_field "email", {class: "form", size: "30", placeholder: "Email...we'll never spam you"}%>
+     <table class="gender_and_datepick_holder">
+       <tr>
+        <td style="width: 79px;">
+           <div class="select">
+               <%=f.select :gender, [:Select, :Male, :Female]%>
+           </div>
+        </td>
+        <td align="center">
+          <div class="datepicker_container">
+            <%=f.text_field "dob", {class: "form datepicker sign_up_datepick", size: "10", placeholder: "mm/dd/yyyy", title: "date of birth"}%>
+          </div></td>
+       </tr>
+     </table>
+              <div class="checkbox">
+                <%=f.check_box :terms_of_service%>
+                <label for="user_terms_of_service">I agree to the Terms of Use and Privacy Policy</label>
+              </div>
+
+              <%=submit_tag "Create Account", class: "btn_redbig fl-r", size: "30"%>
+
+                <div class="clr"></div>
+
+              </div>
+
+              <script>
+                $(function(){
+                  $('select#user_gender').selectmenu();
+                  $('#user_terms_of_service').button();
+                });
+
+                $(document).ready(function(){
+
+                  $('#fb_connect').click(function(){
+                    window.parent.location = "http://"+"<%=request.host_with_port%>"+"/auth/facebook";
+                  });
+
+                  $('#twitter_connect').click(function(){
+                    window.parent.location = "http://"+"<%=request.host_with_port%>"+"/auth/twitter";
+                  });
+  
+                  $('input').placeholder();
+
+
+                });
+              </script>
+
