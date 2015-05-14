@@ -11,11 +11,13 @@ Feel free to use any third party libraries you like.
 Example:
 
     Enter github usernames:
-    > nobody1234, cih, paxwax, jackbot
-    
+    > nobody1234, cih, paxwax, jackbot, beornborn, bbatsov
+
     Results:
     nobody1234: 79
     cih: 65
+    bbatsov: 33
+    beornborn: 22
     paxwax: 0
     jackbot: 0
 
