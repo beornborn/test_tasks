@@ -1,0 +1,23 @@
+:global {
+  body, html, #root {
+    margin: 0;
+    padding: 0;
+    width: 100%;
+    height: 100%;
+    font-size: 14px;
+    font-family: Roboto, sans-serif;
+    color: #434343;
+  }
+
+  *:focus {
+    outline: none;
+  }
+
+  a {
+    text-decoration: none;
+  }
+
+  a[disabled] {
+    pointer-events: none;
+  }
+}
