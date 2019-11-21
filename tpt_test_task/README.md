@@ -1,6 +1,6 @@
 # Tracker
 
-toptal test task
+test task
 
 1. what is the scenario by which user-manager and user-admin can appear in application?
 
