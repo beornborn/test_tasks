@@ -15,7 +15,7 @@
   },
   "dependencies": {
     "immutability-helper": "^2.7.0",
-    "lodash": "^4.17.10",
+    "lodash": "^4.17.19",
     "material-ui": "^0.20.1",
     "moment": "^2.22.1",
     "moment-duration-format": "^2.2.2",
